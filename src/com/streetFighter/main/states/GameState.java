@@ -9,19 +9,20 @@ import javax.swing.ImageIcon;
 
 import com.streetFighter.entities.Ken;
 import com.streetFighter.entities.Ryu;
+import com.streetFighter.entities.DeeJay;
 import com.streetFighter.gfx.*;
 import com.streetFighter.main.Game;
 
 public class GameState extends State {	
+
+	public void music() {
+		
+	}
+		
 	// init ryu, ken
 	private Ryu ryu;
 	private Ken ken;
-
-	@Override
-	public void music() {
-		
-		System.out.println("Playing game state music...");
-	}
+	private DeeJay deejay;
 	
 	// constructor
 	public GameState(Game game) {
@@ -29,7 +30,8 @@ public class GameState extends State {
 		
 		// create instance of ryu, ken 
 		ryu = new Ryu(game, 60, 280);
-		ken = new Ken(game, 224 * 2, 280);		
+		ken = new Ken(game, 224 * 2, 280);	
+		deejay = new DeeJay(game, 200, 280);	
 	}
 	
 	@Override
@@ -41,9 +43,13 @@ public class GameState extends State {
 		ken.getAttackBounds();
 		ken.getHitBounds();
 		
+		deejay.getAttackBounds();
+		deejay.getHitBounds();
+		
 		// update entire instance
 		ryu.tick();
 		ken.tick();	
+		deejay.tick();
 	}
 
 	@Override
@@ -72,6 +78,7 @@ public class GameState extends State {
 		// render instances
 		ryu.render(g);
 		ken.render(g);	
+		deejay.render(g);
 					
 		g.setColor(Color.BLACK);
 		// end game

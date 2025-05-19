@@ -10,6 +10,7 @@ public class Animation {
 	private BufferedImage[] frames;
 	
 	private boolean playedOnce = false;
+	private boolean reverse = false;
 	
 	public Animation(int rate, BufferedImage[] frames) {
 
@@ -32,16 +33,23 @@ public class Animation {
 			
 		// if timer > rate per frame...
 		if (timer > rate) {
-			// increment index (i.e. go to next frame)
-			index++;
-			timer = 0;
-				
-			// if last frame, go to first frame
-			if (index == frames.length) {
-				index = 0;
-				// then the animation has played once...
-				playedOnce = true;
+			if (reverse) {
+				// decrement index for reverse playback
+				index--;
+				if (index < 0) {
+					index = frames.length - 1;
+					playedOnce = true;
+				}
+			} else {
+				// increment index for forward playback
+				index++;
+				if (index == frames.length) {
+					index = 0;
+					// then the animation has played once...
+					playedOnce = true;
+				}
 			}
+			timer = 0;
 		}
 		
 	}
@@ -66,6 +74,10 @@ public class Animation {
 	// set played once to false...
 	public boolean setPlayed() {
 		return playedOnce = false;
+	}
+
+	public void setReverse(boolean reverse) {
+		this.reverse = reverse;
 	}
 	
 }

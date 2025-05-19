@@ -6,120 +6,125 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 import com.streetFighter.gfx.Animation;
 import com.streetFighter.gfx.Assets;
 import com.streetFighter.main.Game;
+import com.streetFighter.main.states.GameState;
+import com.streetFighter.main.states.State;
 
-public class Ryu extends Creature {
+public class DeeJay extends Creature {
 
-	// Ryu: vars...
-	private int health;
-	private int velX, velY;
-	private Game game;
+    // DeeJay: vars...
+    private int health;
+    private int velX, velY;
+    private Game game;
 
-	// STATES
+    // STATES
 
-	// basic movement
-	private final int IDLING         = 0;
-	private final int PARRYING_R     = 1; 
-	private final int PARRYING_L     = 2;
-	private final int CROUCHING      = 3;
-	private final int JUMPING        = 9;
-	private final int FRONT_FLIPPING = 10;
-	private final int BACK_FLIPPING  = 11;
+    // basic movement
+    private final int IDLING         = 0;
+    private final int PARRYING_R     = 1; 
+    private final int PARRYING_L     = 2;
+    private final int CROUCHING      = 3;
+    private final int JUMPING        = 9;
+    private final int FRONT_FLIPPING = 10;
+    private final int BACK_FLIPPING  = 11;
 
-	// ground attacks: lettter stands for respective key
-	private final int ATTACKING_G    = 4;
-	private final int ATTACKING_H    = 5;
-	private final int ATTACKING_B    = 6;
-	private final int ATTACKING_N    = 7;
+    // ground attacks: letter stands for respective key
+    private final int ATTACKING_G    = 4;
+    private final int ATTACKING_H    = 5;
+    private final int ATTACKING_B    = 6;
+    private final int ATTACKING_N    = 7;
 
-	// crouch attacks: C for crouch
-	private final int ATTACKING_C_G  = 8;
+    // crouch attacks: C for crouch
+    private final int ATTACKING_C_G  = 8;
 
-	// air attacks: A for air
-	private final int ATTACKING_A_G  = 12;
-	private final int ATTACKING_A_H  = 13;
-	private final int ATTACKING_A_B  = 14;	
+    // air attacks: A for air
+    private final int ATTACKING_A_G  = 12;
+    private final int ATTACKING_A_H  = 13;
+    private final int ATTACKING_A_B  = 14;    
 
-	// hurting anims
-	private final int HURTING = 15;
-	// dummy var for checks
-	private final int DUMMY = 19;
+    // hurting anims
+    private final int HURTING = 15;
+    // dummy var for checks
+    private final int DUMMY = 19;
 
-	// platformer
-	private final int GRAV = 1;
-	private final int TERMINAL_VELOCITY = 2;
-	private final int JUMP_SPEED = -10;
+    // platformer
+    private final int GRAV = 1;
+    private final int TERMINAL_VELOCITY = 2;
+    private final int JUMP_SPEED = -10;
 
-	private boolean[] anims = new boolean[20];
+    private boolean[] anims = new boolean[20];
 
-	// movement animations
-	private Animation idle;
-	private Animation parry_f, parry_b;
-	private Animation crouch;
-	private Animation jump, front_flip, back_flip;
+    // movement animations
+    private Animation idle;
+    private Animation parry_f, parry_b;
+    private Animation crouch;
+    private Animation jump, front_flip, back_flip;
 
-	// ground attack animations
-	private Animation attack_G, attack_H, attack_B, attack_N;
+    // ground attack animations
+    private Animation attack_G, attack_H, attack_B, attack_N;
 
-	// crouch attack animations
-	private Animation attack_C_G;
+    // crouch attack animations
+    private Animation attack_C_G;
 
-	// air attacks animation
-	private Animation attack_A_G, attack_A_H, attack_A_B;
+    // air attacks animation
+    private Animation attack_A_G, attack_A_H, attack_A_B;
 
-	// ground hurt
-	private Animation hurting_G;
+    // ground hurt
+    private Animation hurting_G;
 
-	// cooldowns
-	private boolean hurting;
-	private long lastTimer;
+    // cooldowns
+    private boolean hurting;
+    private long lastTimer;
 
-	// random generator
-	Random rand;
+    // random generator
+    Random rand;
 
-	public Ryu(Game game, float x, float y) {
-		super(x, y);
+    public DeeJay(Game game, float x, float y) {
+     super(x, y);
 		// initialise game in constuctor to access vars
 		this.game = game;
 
-		// instantiate random gen
 		rand = new Random();
 
-		// health to 100
 		health = 100;
+		hurting = false;
 
-		// movement
-		idle 	   = new Animation(100, Assets.idle);
-		parry_f    = new Animation(100, Assets.parry_f);
-		parry_b    = new Animation(100, Assets.parry_b);
-		crouch     = new Animation(100, Assets.crouch);
-		jump 	   = new Animation(85, Assets.jump);
-		front_flip = new Animation(120, Assets.front_flip);
-		back_flip  = new Animation(120, Assets.back_flip);
 
-		// ground attacks
-		attack_G   = new Animation(100, Assets.punch);
-		attack_H   = new Animation(100, Assets.quick_punch);
-		attack_B   = new Animation(75, Assets.upper_kick);
-		attack_N   = new Animation(100, Assets.kick_low);
+        // movement
+        idle        = new Animation(100, Assets.deejay_idle);
+        parry_f     = new Animation(100, Assets.deejay_parry_f);
+        parry_b     = new Animation(100, Assets.deejay_parry_b);
+        crouch      = new Animation(100, Assets.deejay_crouch);
+        jump        = new Animation(400, Assets.deejay_jump);
+        front_flip  = new Animation(120, Assets.deejay_front_flip);
+        front_flip.setReverse(true);
+        back_flip   = new Animation(120, Assets.deejay_back_flip);
 
-		// crouch attack
-		attack_C_G = new Animation(50, Assets.crouch_punch);
+        // ground attacks
+        attack_G    = new Animation(150, Assets.deejay_punch);
+        attack_H    = new Animation(100, Assets.deejay_quick_punch);
+        attack_B    = new Animation(75, Assets.deejay_upper_kick);
+        attack_N    = new Animation(100, Assets.deejay_kick_low);
 
-		// air attacks
-		attack_A_G = new Animation(100, Assets.air_punch);
-		attack_A_H = new Animation(100, Assets.punch_down);
-		attack_A_B = new Animation(100, Assets.air_kick);		
+        // crouch attack
+        attack_C_G  = new Animation(50, Assets.deejay_crouch_punch);
 
-		// hurting anim
-		hurting_G   = new Animation(100, Assets.hit_stand_back);
-	}
+        // air attacks
+        attack_A_G  = new Animation(100, Assets.deejay_air_punch);
+        attack_A_H  = new Animation(100, Assets.deejay_punch_down);
+        attack_A_B  = new Animation(100, Assets.deejay_air_kick);        
 
-	@Override
+        // hurting anim
+        hurting_G   = new Animation(100, Assets.deejay_hit_stand_back);
+    }
+
+   	@Override
 	public void tick() {
 
 		// tick movement
@@ -156,8 +161,8 @@ public class Ryu extends Creature {
 		if (anims[ATTACKING_A_B])
 			attack_A_B.tick();
 
-		
-			
+		if (anims[HURTING])
+			hurting_G.tick();
 
 		// if on the ground		
 		if (y == 280) {
@@ -334,7 +339,6 @@ public class Ryu extends Creature {
 
 		// if hurting...
 		if (hurting) {	
-			hurting_G.tick();
 			if (System.currentTimeMillis() - lastTimer > 400) {
 				anims[HURTING] = false;
 				hurting = false;
@@ -573,7 +577,7 @@ public class Ryu extends Creature {
 			return new Rectangle((int) x, (int) y + 30, 60, 80);	
 
 
-		return new Rectangle((int) x, (int) y, 60, 110);		
+		return new Rectangle((int) x, (int) y, 69, 110);		
 	}
 
 	public Rectangle getAttackBounds() {
