@@ -573,4 +573,19 @@ public class GameState extends State {
 		}
 		return new Rectangle(0, 0, 0, 0);
 	}
+
+	@Override
+	public Rectangle getDeejayHitBounds() {
+		return getDeeJayHitBounds();
+	}
+
+	@Override
+	public Rectangle getDeejayAttackBounds() {
+		return getDeeJayAttackBounds();
+	}
+
+	@Override
+	public int getDeejayX() {
+		return getDeeJayX();
+	}
 }
