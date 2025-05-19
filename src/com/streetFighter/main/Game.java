@@ -1,12 +1,5 @@
 package com.streetFighter.main;
 
-/**
- * Street Fighter
- * This program attempts to recreate the classic fighter game, Street Fighter. 
- * New concepts: Canvas, implements [...], abstract classes, Threads for Runnables, Image Loader, packagaes, super constructors
- * @author Steven Mathew
- * 15 June 2018 
- */
 
 import java.io.File;
 
@@ -41,7 +34,7 @@ import com.streetFighter.main.states.MapSelectState;
 import com.streetFighter.managers.KeyManager;
 import com.streetFighter.managers.PlayerManager;
 
-@SuppressWarnings({ "unused", "serial" })
+
 public class Game extends Canvas implements Runnable {
 	// declare constants
 	public static final String TITLE  = "Street Fighter II";

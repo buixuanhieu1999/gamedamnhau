@@ -106,10 +106,21 @@ public class MenuState extends State {
     
     @Override
     public Rectangle getKenAttackBounds() { return new Rectangle(0, 0, 0, 0); }
+
+    @Override
+    public Rectangle getDeejayHitBounds() { return new Rectangle(0, 0, 0, 0); }
+    
+    @Override
+    public Rectangle getDeejayAttackBounds() { return new Rectangle(0, 0, 0, 0); }
     
     @Override
     public int getRyuX() { return 0; }
     
     @Override
     public int getKenX() { return 0; }
+
+    @Override
+    public int getDeejayX() { return 0; }
+    
+    
 } 

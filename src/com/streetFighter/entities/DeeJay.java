@@ -113,8 +113,9 @@ public class DeeJay extends Creature {
         crouch      = new Animation(100, Assets.deejay_crouch);
         jump        = new Animation(400, Assets.deejay_jump);
         front_flip  = new Animation(120, Assets.deejay_front_flip);
-        front_flip.setReverse(true);
+        
         back_flip   = new Animation(120, Assets.deejay_back_flip);
+		back_flip.setReverse(true);
 
         // ground attacks
         attack_G    = new Animation(150, Assets.deejay_punch);
