@@ -18,6 +18,8 @@ public class Ryu extends Creature {
 	private int health;
 	private int velX, velY;
 	private Game game;
+	private boolean facingRight = true; // By default Ryu faces right
+	private int playerNumber = 1; // Default to player 1, can be 1 or 2
 
 	// STATES
 
@@ -82,9 +84,18 @@ public class Ryu extends Creature {
 	Random rand;
 
 	public Ryu(Game game, float x, float y) {
+		this(game, x, y, 1); // Default to player 1
+	}
+	
+	public Ryu(Game game, float x, float y, int playerNumber) {
 		super(x, y);
 		// initialise game in constuctor to access vars
 		this.game = game;
+		this.playerNumber = playerNumber;
+		
+		// Determine facing direction based on position
+		// If Ryu is on the right side, he should face left
+		this.facingRight = (x < Game.WIDTH);
 
 		// instantiate random gen
 		rand = new Random();
@@ -130,7 +141,6 @@ public class Ryu extends Creature {
 		parry_b.tick();		
 		parry_f.tick();	
 
-
 		// update attacks animations
 		if (anims[ATTACKING_G])
 			attack_G.tick();
@@ -156,34 +166,52 @@ public class Ryu extends Creature {
 		if (anims[ATTACKING_A_B])
 			attack_A_B.tick();
 
-		
-			
+		// If hurting, tick the animation
+		if (hurting) {	
+			hurting_G.tick();
+		}
+
+		// Reset hurting state after 400ms
+		if (hurting && System.currentTimeMillis() - lastTimer > 400) {
+			anims[HURTING] = false;
+			hurting = false;
+		}
 
 		// if on the ground		
 		if (y == 280) {
+			// Check appropriate controls based on which player is controlling this Ryu
+			boolean goLeft = (playerNumber == 1) ? game.getKeyManager().left : game.getKeyManager().left1;
+			boolean goRight = (playerNumber == 1) ? game.getKeyManager().right : game.getKeyManager().right1;
+			boolean goUp = (playerNumber == 1) ? game.getKeyManager().up : game.getKeyManager().up1;
+			boolean goDown = (playerNumber == 1) ? game.getKeyManager().down : game.getKeyManager().down1;
+			boolean attackG = (playerNumber == 1) ? game.getKeyManager().G : game.getKeyManager().N4;
+			boolean attackH = (playerNumber == 1) ? game.getKeyManager().H : game.getKeyManager().N5;
+			boolean attackB = (playerNumber == 1) ? game.getKeyManager().B : game.getKeyManager().N1;
+			boolean attackN = (playerNumber == 1) ? game.getKeyManager().N : game.getKeyManager().N2;
+			
 			// if press left, move left
-			if (game.getKeyManager().left && !game.getKeyManager().up) {
+			if (goLeft && !goUp) {
 				velX = -2;
 
 				// reset and init true to state
 				handleAnims(PARRYING_L);
 			}
 			// if press right, move forward
-			else if (game.getKeyManager().right && !game.getKeyManager().up) {
+			else if (goRight && !goUp) {
 				velX = 2;
 
 				// reset and init true to state
 				handleAnims(PARRYING_R);
 			} 
 			// if pressing only up
-			else if (game.getKeyManager().up && !game.getKeyManager().right && !game.getKeyManager().left && !anims[JUMPING]) {
+			else if (goUp && !goRight && !goLeft && !anims[JUMPING]) {
 				// jump
 				velY = JUMP_SPEED - 2;
 				y-=1;
 				jump.index = 0;
 			}
 			// if pressing up, right
-			else if (game.getKeyManager().up && game.getKeyManager().right && !game.getKeyManager().left && !anims[FRONT_FLIPPING]) {
+			else if (goUp && goRight && !goLeft && !anims[FRONT_FLIPPING]) {
 				// jump diagonally to the right
 				velY = JUMP_SPEED;
 				velX = 2;
@@ -191,7 +219,7 @@ public class Ryu extends Creature {
 				front_flip.index = 0;				
 			}
 			// if pressing up, left
-			else if (game.getKeyManager().up && !game.getKeyManager().right && game.getKeyManager().left && !anims[BACK_FLIPPING]) {
+			else if (goUp && !goRight && goLeft && !anims[BACK_FLIPPING]) {
 				// jump diagonally to the left
 				velY = JUMP_SPEED;
 				velX = -2;
@@ -199,7 +227,7 @@ public class Ryu extends Creature {
 				back_flip.index = 0;	
 			}
 			// if press down, crouch
-			else if (!game.getKeyManager().right && !game.getKeyManager().left && game.getKeyManager().down){
+			else if (!goRight && !goLeft && goDown){
 
 				// stop moving
 				velX = 0;
@@ -209,7 +237,7 @@ public class Ryu extends Creature {
 				handleAnims(CROUCHING);
 
 				// if pressing g while crouching
-				if (game.getKeyManager().G) {
+				if (attackG) {
 					velX = 0;
 					velY = 0;
 
@@ -227,28 +255,28 @@ public class Ryu extends Creature {
 
 			}
 			// if g and not crouching
-			else if (game.getKeyManager().G && !anims[CROUCHING]){
+			else if (attackG && !anims[CROUCHING]){
 				velX = 0;
 				velY = 0;
 
 				// reset and init true to state, punch
 				if (checkIfRunning())
 					handleAnims(ATTACKING_G);
-			} else if (game.getKeyManager().H && !anims[CROUCHING]){
+			} else if (attackH && !anims[CROUCHING]){
 				velX = 0;
 				velY = 0;
 
 				// reset and quick punch
 				if (checkIfRunning())
 					handleAnims(ATTACKING_H);
-			} else if (game.getKeyManager().B && !anims[CROUCHING]){
+			} else if (attackB && !anims[CROUCHING]){
 				velX = 0;
 				velY = 0;
 
 				// reset and kick
 				if (checkIfRunning())
 					handleAnims(ATTACKING_B);
-			} else if (game.getKeyManager().N && !anims[CROUCHING]){
+			} else if (attackN && !anims[CROUCHING]){
 				velX = 0;
 				velY = 0;
 
@@ -278,6 +306,10 @@ public class Ryu extends Creature {
 			}
 			// otherwise, player is in air
 		} else {
+			// Check appropriate controls based on which player is controlling this Ryu
+			boolean attackG = (playerNumber == 1) ? game.getKeyManager().G : game.getKeyManager().N4;
+			boolean attackH = (playerNumber == 1) ? game.getKeyManager().H : game.getKeyManager().N5;
+			boolean attackB = (playerNumber == 1) ? game.getKeyManager().B : game.getKeyManager().N1;
 
 			anims[PARRYING_R] = false;
 			anims[PARRYING_L] = false;
@@ -290,15 +322,15 @@ public class Ryu extends Creature {
 			// if moving left
 			if (velX < 0) {
 				// back flip
-				handleAirAttacks(back_flip, BACK_FLIPPING);
+				handleAirAttacks(back_flip, BACK_FLIPPING, attackG, attackH, attackB);
 				// if moving right
 			} else if (velX > 0) {
 				// front flip
-				handleAirAttacks(front_flip, FRONT_FLIPPING);
+				handleAirAttacks(front_flip, FRONT_FLIPPING, attackG, attackH, attackB);
 				// otherwise
 			} else {
 				// jump vertically
-				handleAirAttacks(jump, JUMPING);
+				handleAirAttacks(jump, JUMPING, attackG, attackH, attackB);
 			}
 		}
 
@@ -329,18 +361,7 @@ public class Ryu extends Creature {
 			}
 		}
 
-		// collisions
 		collisions();
-
-		// if hurting...
-		if (hurting) {	
-			hurting_G.tick();
-			if (System.currentTimeMillis() - lastTimer > 400) {
-				anims[HURTING] = false;
-				hurting = false;
-				lastTimer += 400;
-			}
-		}
 
 		// update horizontal pos.
 		x += velX;
@@ -413,28 +434,8 @@ public class Ryu extends Creature {
 	}
 
 	public void collisions() {
-
-		// if rectangle of player collides with enemy rectangle
-		if (game.getGameState().getKenAttackBounds().intersects(getHitBounds())) {
-
-			// if not already hurting...
-			if (!hurting) {
-				handleAnims(HURTING);
-				lastTimer = System.currentTimeMillis();
-				hurting = true;
-				health-=2;
-			}
-
-			// freeze..
-
-			try {
-				TimeUnit.MILLISECONDS.sleep(30);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-
-		} 
-
+		// Collision handling now managed by GameState
+		// This method is kept for compatibility but damage is handled externally
 	}
 
 	@Override
@@ -449,13 +450,29 @@ public class Ryu extends Creature {
 			g2d.translate(-k, k);
 		}
 
-
 		// draw shadow
 		g.setColor(new Color(0,0,0, 125));
 		g.fillOval((int) x - 4, 188 * Game.SCALE, 64, 16);
 
-		// drawing ryu
+		// If Ryu is facing left, flip the sprite horizontally
+		if (!facingRight) {
+			drawRyuFacingLeft(g);
+		} else {
+			drawRyuFacingRight(g);
+		}
 
+		// draw hitboxes
+
+		/*		g.setColor(Color.WHITE);
+		g.drawRect(getHitBounds().x, getHitBounds().y, getHitBounds().width, getHitBounds().height);
+
+		g.setColor(Color.RED);
+		g.drawRect(getAttackBounds().x, getAttackBounds().y, getAttackBounds().width, getAttackBounds().height);*/
+
+	}
+
+	private void drawRyuFacingRight(Graphics g) {
+		// Original rendering code for Ryu facing right
 		if (anims[PARRYING_R])
 			g.drawImage(getCurrentAnimFrame(), (int) (x - 9), (int) (y - 3), null);	
 
@@ -502,16 +519,58 @@ public class Ryu extends Creature {
 			g.drawImage(getCurrentAnimFrame(), (int) (x - 15), (int) (y + 1), null);	
 
 		else 
-			g.drawImage(getCurrentAnimFrame(), (int) x, (int) y, null);	
+			g.drawImage(getCurrentAnimFrame(), (int) x, (int) y, null);
+	}
+	
+	private void drawRyuFacingLeft(Graphics g) {
+		// Flipped rendering code for Ryu facing left
+		if (anims[PARRYING_R])
+			g.drawImage(getCurrentAnimFrame(), (int) (x + 9), (int) (y - 3), -getCurrentAnimFrame().getWidth(), getCurrentAnimFrame().getHeight(), null);	
 
-		// draw hitboxes
+		else if (anims[PARRYING_L])
+			g.drawImage(getCurrentAnimFrame(), (int) (x + 4), (int) y, -getCurrentAnimFrame().getWidth(), getCurrentAnimFrame().getHeight(), null);	
 
-		g.setColor(Color.WHITE);
-		g.drawRect(getHitBounds().x, getHitBounds().y, getHitBounds().width, getHitBounds().height);
+		else if (anims[CROUCHING])
+			g.drawImage(getCurrentAnimFrame(), (int) x, (int) y + 36, -getCurrentAnimFrame().getWidth(), getCurrentAnimFrame().getHeight(), null);	
 
-		g.setColor(Color.RED);
-		g.drawRect(getAttackBounds().x, getAttackBounds().y, getAttackBounds().width, getAttackBounds().height);
+		else if (anims[JUMPING])
+			g.drawImage(getCurrentAnimFrame(), (int) x + 3, (int) y - 20, -getCurrentAnimFrame().getWidth(), getCurrentAnimFrame().getHeight(), null);
 
+		else if (anims[BACK_FLIPPING])
+			g.drawImage(getCurrentAnimFrame(), (int) x + 15, (int) y - 15, -getCurrentAnimFrame().getWidth(), getCurrentAnimFrame().getHeight(), null);
+
+		else if (anims[FRONT_FLIPPING])
+			g.drawImage(getCurrentAnimFrame(), (int) x + 15, (int) y - 15, -getCurrentAnimFrame().getWidth(), getCurrentAnimFrame().getHeight(), null);
+
+		else if (anims[ATTACKING_G])
+			g.drawImage(getCurrentAnimFrame(), (int) x, (int) (y + 3), -getCurrentAnimFrame().getWidth(), getCurrentAnimFrame().getHeight(), null);
+
+		else if (anims[ATTACKING_H])
+			g.drawImage(getCurrentAnimFrame(), (int) x, (int) (y + 3), -getCurrentAnimFrame().getWidth(), getCurrentAnimFrame().getHeight(), null);
+
+		else if (anims[ATTACKING_B])
+			g.drawImage(getCurrentAnimFrame(), (int) x, (int) (y - 3), -getCurrentAnimFrame().getWidth(), getCurrentAnimFrame().getHeight(), null);
+
+		else if (anims[ATTACKING_N])
+			g.drawImage(getCurrentAnimFrame(), (int) x, (int) (y - 4), -getCurrentAnimFrame().getWidth(), getCurrentAnimFrame().getHeight(), null);
+
+		else if (anims[ATTACKING_C_G])
+			g.drawImage(getCurrentAnimFrame(), (int) x, (int) y + 37, -getCurrentAnimFrame().getWidth(), getCurrentAnimFrame().getHeight(), null);	
+
+		else if (anims[ATTACKING_A_G])
+			g.drawImage(getCurrentAnimFrame(), (int) x, (int) y - 10, -getCurrentAnimFrame().getWidth(), getCurrentAnimFrame().getHeight(), null);
+
+		else if (anims[ATTACKING_A_H])
+			g.drawImage(getCurrentAnimFrame(), (int) x, (int) y - 10, -getCurrentAnimFrame().getWidth(), getCurrentAnimFrame().getHeight(), null);
+
+		else if (anims[ATTACKING_A_B])
+			g.drawImage(getCurrentAnimFrame(), (int) x + 4, (int) y - 5, -getCurrentAnimFrame().getWidth(), getCurrentAnimFrame().getHeight(), null);
+
+		else if (anims[HURTING])
+			g.drawImage(getCurrentAnimFrame(), (int) (x + 15), (int) (y + 1), -getCurrentAnimFrame().getWidth(), getCurrentAnimFrame().getHeight(), null);	
+
+		else 
+			g.drawImage(getCurrentAnimFrame(), (int) x, (int) y, -getCurrentAnimFrame().getWidth(), getCurrentAnimFrame().getHeight(), null);
 	}
 
 	private BufferedImage getCurrentAnimFrame() {
@@ -567,42 +626,79 @@ public class Ryu extends Creature {
 
 	public Rectangle getHitBounds() {
 
-		if (anims[CROUCHING])
-			return new Rectangle((int) x, (int) y + 30, 60, 80);	
-		else if (anims[ATTACKING_C_G])
-			return new Rectangle((int) x, (int) y + 30, 60, 80);	
-
-
-		return new Rectangle((int) x, (int) y, 60, 110);		
+		if (facingRight) {
+			// Right-facing hitboxes
+			if (anims[CROUCHING])
+				return new Rectangle((int) x, (int) y + 30, 60, 80);	
+			else if (anims[ATTACKING_C_G])
+				return new Rectangle((int) x, (int) y + 30, 60, 80);	
+			else
+				return new Rectangle((int) x, (int) y, 60, 110);
+		} else {
+			// Left-facing hitboxes
+			if (anims[CROUCHING])
+				return new Rectangle((int) x - 60, (int) y + 30, 60, 80);	
+			else if (anims[ATTACKING_C_G])
+				return new Rectangle((int) x - 60, (int) y + 30, 60, 80);	
+			else
+				return new Rectangle((int) x - 60, (int) y, 60, 110);
+		}
 	}
 
 	public Rectangle getAttackBounds() {
 
 		// add specialized hitbox for each individual attack
+		if (facingRight) {
+			// Right-facing hitboxes
+			if (anims[ATTACKING_G] && attack_G.index == 2)
+				return new Rectangle((int) x + 40, (int) y + 10, 60, 30);
 
-		if (anims[ATTACKING_G] && attack_G.index == 2)
-			return new Rectangle((int) x + 40, (int) y + 10, 60, 30);
+			if (anims[ATTACKING_H] && attack_H.index == 2)
+				return new Rectangle((int) x + 40, (int) y + 10, 60, 30);
 
-		if (anims[ATTACKING_H] && attack_H.index == 2)
-			return new Rectangle((int) x + 40, (int) y + 10, 60, 30);
+			if (anims[ATTACKING_B] && attack_B.index >= 4 && attack_B.index <= 6)
+				return new Rectangle((int) x + 60, (int) y, 60, 50);
 
-		if (anims[ATTACKING_B] && attack_B.index >= 4 && attack_B.index <= 6)
-			return new Rectangle((int) x + 60, (int) y, 60, 50);
+			if (anims[ATTACKING_N] && attack_N.index >= 3 && attack_N.index <= 4)
+				return new Rectangle((int) x + 60, (int) y + 50, 60, 50);
 
-		if (anims[ATTACKING_N] && attack_N.index >= 3 && attack_N.index <= 4)
-			return new Rectangle((int) x + 60, (int) y + 50, 60, 50);
+			if (anims[ATTACKING_C_G] && attack_C_G.index >= 0 && attack_C_G.index <= 1)
+				return new Rectangle((int) x + 30, (int) y + 40, 60, 30);
 
-		if (anims[ATTACKING_C_G] && attack_C_G.index >= 0 && attack_C_G.index <= 1)
-			return new Rectangle((int) x + 30, (int) y + 40, 60, 30);
+			if (anims[ATTACKING_A_G] && attack_A_G.index >= 2 && attack_A_G.index <= 3)
+				return new Rectangle((int) x + 30, (int) y + 20, 60, 50);
 
-		if (anims[ATTACKING_A_G] && attack_A_G.index >= 2 && attack_A_G.index <= 3)
-			return new Rectangle((int) x + 30, (int) y + 20, 60, 50);
+			if (anims[ATTACKING_A_H] && attack_A_H.index >= 0 && attack_A_H.index <= 1)
+				return new Rectangle((int) x + 30, (int) y + 20, 60, 50);
 
-		if (anims[ATTACKING_A_H] && attack_A_H.index >= 0 && attack_A_H.index <= 1)
-			return new Rectangle((int) x + 30, (int) y + 20, 60, 50);
+			if (anims[ATTACKING_A_B] && attack_A_B.index >= 2 && attack_A_B.index <= 3)
+				return new Rectangle((int) x + 40, (int) y + 40, 60, 30);
+		} else {
+			// Left-facing hitboxes (mirrored)
+			if (anims[ATTACKING_G] && attack_G.index == 2)
+				return new Rectangle((int) x - 100, (int) y + 10, 60, 30);
 
-		if (anims[ATTACKING_A_B] && attack_A_B.index >= 2 && attack_A_B.index <= 3)
-			return new Rectangle((int) x + 40, (int) y + 40, 60, 30);
+			if (anims[ATTACKING_H] && attack_H.index == 2)
+				return new Rectangle((int) x - 100, (int) y + 10, 60, 30);
+
+			if (anims[ATTACKING_B] && attack_B.index >= 4 && attack_B.index <= 6)
+				return new Rectangle((int) x - 120, (int) y, 60, 50);
+
+			if (anims[ATTACKING_N] && attack_N.index >= 3 && attack_N.index <= 4)
+				return new Rectangle((int) x - 120, (int) y + 50, 60, 50);
+
+			if (anims[ATTACKING_C_G] && attack_C_G.index >= 0 && attack_C_G.index <= 1)
+				return new Rectangle((int) x - 90, (int) y + 40, 60, 30);
+
+			if (anims[ATTACKING_A_G] && attack_A_G.index >= 2 && attack_A_G.index <= 3)
+				return new Rectangle((int) x - 90, (int) y + 20, 60, 50);
+
+			if (anims[ATTACKING_A_H] && attack_A_H.index >= 0 && attack_A_H.index <= 1)
+				return new Rectangle((int) x - 90, (int) y + 20, 60, 50);
+
+			if (anims[ATTACKING_A_B] && attack_A_B.index >= 2 && attack_A_B.index <= 3)
+				return new Rectangle((int) x - 100, (int) y + 40, 60, 30);
+		}
 
 		return new Rectangle((int) x, (int) y, 0, 0);
 	}
@@ -618,21 +714,19 @@ public class Ryu extends Creature {
 		anims[unchanged] = true;
 	}
 
-	public void handleAirAttacks(Animation anim, int index) {
-
+	public void handleAirAttacks(Animation anim, int index, boolean attackG, boolean attackH, boolean attackB) {
 		// if g, h, b while in air... set all anims to false except called anim
-		if (game.getKeyManager().G) {
+		if (attackG) {
 			handleAnims(ATTACKING_A_G);
-		} else if (game.getKeyManager().H) {
+		} else if (attackH) {
 			handleAnims(ATTACKING_A_H);
-		} else if (game.getKeyManager().B) {
+		} else if (attackB) {
 			handleAnims(ATTACKING_A_B);
 		} else if (checkIfRunning()){
 			// update anim and set all to false
 			anim.tick();
 			handleAnims(index);
 		}
-
 	}
 
 	public boolean checkIfRunning() {
@@ -676,6 +770,24 @@ public class Ryu extends Creature {
 	// get x	
 	public int getRyuX() {
 		return (int) x;
+	}
+
+	// Add damage method to handle attacks
+	public void takeDamage() {
+		// If not already hurting...
+		if (!hurting) {
+			handleAnims(HURTING);
+			lastTimer = System.currentTimeMillis();
+			hurting = true;
+			health -= 10;
+			
+			// Add knockback effect
+			if (facingRight) {
+				x -= 20; // Knocked back left
+			} else {
+				x += 20; // Knocked back right
+			}
+		}
 	}
 
 }
