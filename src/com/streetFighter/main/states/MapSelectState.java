@@ -115,16 +115,39 @@ public class MapSelectState extends State {
     
     @Override
     public Rectangle getRyuAttackBounds() { return new Rectangle(0, 0, 0, 0); }
+
+    @Override
+    public Rectangle getDeejayHitBounds() { 
+        return new Rectangle(0, 0, 0, 0); 
+    }
+
+    @Override
+    public Rectangle getDeejayAttackBounds() { 
+        return new Rectangle(0, 0, 0, 0); 
+    }
+
+    @Override
+    public int getDeejayX() { 
+        return 0; 
+    }
+
+    @Override
+    public Rectangle getKenHitBounds() { 
+        return new Rectangle(0, 0, 0, 0); 
+    }
     
     @Override
-    public Rectangle getKenHitBounds() { return new Rectangle(0, 0, 0, 0); }
+    public Rectangle getKenAttackBounds() { 
+        return new Rectangle(0, 0, 0, 0); 
+    }
     
     @Override
-    public Rectangle getKenAttackBounds() { return new Rectangle(0, 0, 0, 0); }
+    public int getRyuX() { 
+        return 0; 
+    }
     
     @Override
-    public int getRyuX() { return 0; }
-    
-    @Override
-    public int getKenX() { return 0; }
-} 
+    public int getKenX() { 
+        return 0; 
+    }
+}
