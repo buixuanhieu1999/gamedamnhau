@@ -540,7 +540,7 @@ public class DeeJay extends Creature {
 	private void drawDeeJayFacingLeft(Graphics g) {
 		// Flipped rendering code for DeeJay facing left
 		if (anims[PARRYING_R])
-			g.drawImage(getCurrentAnimFrame(), (int) (x + 9), (int) (y - 3), -getCurrentAnimFrame().getWidth(), getCurrentAnimFrame().getHeight(), null);	
+			g.drawImage(getCurrentAnimFrame(), (int) (x ), (int) (y - 3), -getCurrentAnimFrame().getWidth(), getCurrentAnimFrame().getHeight(), null);	
 
 		else if (anims[PARRYING_L])
 			g.drawImage(getCurrentAnimFrame(), (int) (x + 4), (int) y, -getCurrentAnimFrame().getWidth(), getCurrentAnimFrame().getHeight(), null);	

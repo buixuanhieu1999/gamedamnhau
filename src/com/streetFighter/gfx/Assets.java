@@ -358,7 +358,7 @@ public class Assets {
 		for (int i = 0; i <7; i++) 
 			deejay_back_flip[i] = ss_deejay_back_flip.crop(144, 136, 144 * i, 0);
 		
-		// ground attack:
+	
 	    for (int i = 0; i < 3; i++) 
 			deejay_punch[i] = ss_deejay_punch.crop(117, 104, 117 * i, 0);
 
