@@ -30,7 +30,7 @@ public class GameState extends State {
 	private boolean isBothDeeJay = false;
 	
 	private boolean gameOver = false;
-	private int gameOverOption = 0; // 0 = restart, 1 = main menu
+	private int gameOverOption = 0; // 0 = restart, 1 = exit
 	private long lastSelectionTime = 0;
 	private static final long SELECTION_COOLDOWN = 200;
 
@@ -50,7 +50,7 @@ public class GameState extends State {
 		int player1Character = game.getPlayerManager().getPlayer1Selection();
 		int player2Character = game.getPlayerManager().getPlayer2Selection();
 		
-		// Reset variables
+		// Reset all character instances
 		ryu = null;
 		ken = null;
 		deeJay = null;
@@ -62,46 +62,42 @@ public class GameState extends State {
 		isBothDeeJay = false;
 		
 		// Create player 1's character (left side)
-		if (player1Character == PlayerManager.RYU) { // Player 1 chose Ryu
-			ryu = new Ryu(game, 60, 280, 1); // Player 1 controls
-		} else if (player1Character == PlayerManager.KEN) { // Player 1 chose Ken
-			ken = new Ken(game, 60, 280, 1); // Player 1 controls
-		} else if (player1Character == PlayerManager.DEEJAY) { // Player 1 chose DeeJay
-			deeJay = new DeeJay(game, 60, 280, 1); // Player 1 controls
+		if (player1Character == PlayerManager.RYU) {
+			ryu = new Ryu(game, 60, 280, 1);
+		} else if (player1Character == PlayerManager.KEN) {
+			ken = new Ken(game, 60, 280, 1);
+		} else if (player1Character == PlayerManager.DEEJAY) {
+			deeJay = new DeeJay(game, 60, 280, 1);
 		}
 		
 		// Create player 2's character (right side)
-		if (player2Character == PlayerManager.RYU) { // Player 2 chose Ryu
+		if (player2Character == PlayerManager.RYU) {
 			if (player1Character == PlayerManager.RYU) {
-				// Both chose Ryu
-				player2Ryu = new Ryu(game, 224 * 2, 280, 2); // Player 2 controls
+				player2Ryu = new Ryu(game, 224 * 2, 280, 2);
 				isBothRyu = true;
 			} else {
-				// Only player 2 chose Ryu
-				ryu = new Ryu(game, 224 * 2, 280, 2); // Player 2 controls
+				ryu = new Ryu(game, 224 * 2, 280, 2);
 			}
-		} else if (player2Character == PlayerManager.KEN) { // Player 2 chose Ken
+		} else if (player2Character == PlayerManager.KEN) {
 			if (player1Character == PlayerManager.KEN) {
-				// Both chose Ken
-				player2Ken = new Ken(game, 224 * 2, 280, 2); // Player 2 controls
+				player2Ken = new Ken(game, 224 * 2, 280, 2);
 				isBothKen = true;
 			} else {
-				// Only player 2 chose Ken
-				ken = new Ken(game, 224 * 2, 280, 2); // Player 2 controls
+				ken = new Ken(game, 224 * 2, 280, 2);
 			}
-		} else if (player2Character == PlayerManager.DEEJAY) { // Player 2 chose DeeJay
+		} else if (player2Character == PlayerManager.DEEJAY) {
 			if (player1Character == PlayerManager.DEEJAY) {
-				// Both chose DeeJay
-				player2DeeJay = new DeeJay(game, 224 * 2, 280, 2); // Player 2 controls
+				player2DeeJay = new DeeJay(game, 224 * 2, 280, 2);
 				isBothDeeJay = true;
 			} else {
-				// Only player 2 chose DeeJay
-				deeJay = new DeeJay(game, 224 * 2, 280, 2); // Player 2 controls
+				deeJay = new DeeJay(game, 224 * 2, 280, 2);
 			}
 		}
 		
+		// Reset game state
 		gameOver = false;
 		gameOverOption = 0;
+		lastSelectionTime = 0;
 	}
 	
 	@Override
@@ -164,8 +160,8 @@ public class GameState extends State {
 						// Restart the game
 						initPlayers();
 					} else {
-						// Return to menu
-						State.setState(new MenuState(game));
+						// Exit game
+						System.exit(0);
 					}
 				}
 			}
@@ -292,15 +288,15 @@ public class GameState extends State {
 			// Draw game over menu options
 			g.setFont(new Font("Arial", Font.BOLD, 24));
 			String restart = "RESTART";
-			String mainMenu = "MAIN MENU";
+			String exit = "EXIT";
 			
 			g.setColor(gameOverOption == 0 ? Color.RED : Color.WHITE);
 			int restartWidth = g.getFontMetrics().stringWidth(restart);
 			g.drawString(restart, (Game.WIDTH * Game.SCALE - restartWidth) / 2, Game.HEIGHT * Game.SCALE / 2);
 			
 			g.setColor(gameOverOption == 1 ? Color.RED : Color.WHITE);
-			int menuWidth = g.getFontMetrics().stringWidth(mainMenu);
-			g.drawString(mainMenu, (Game.WIDTH * Game.SCALE - menuWidth) / 2, Game.HEIGHT * Game.SCALE / 2 + 40);
+			int exitWidth = g.getFontMetrics().stringWidth(exit);
+			g.drawString(exit, (Game.WIDTH * Game.SCALE - exitWidth) / 2, Game.HEIGHT * Game.SCALE / 2 + 40);
 			
 			// Draw instructions
 			g.setFont(new Font("Arial", Font.PLAIN, 18));

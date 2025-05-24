@@ -14,10 +14,24 @@ public class MenuState extends State {
     private Font menuFont;
     private Color selectedColor = Color.RED;
     private Color unselectedColor = Color.WHITE;
+    private boolean gameEnded = false;
 
     public MenuState(Game game) {
         super(game);
         menuFont = new Font("Arial", Font.BOLD, 30);
+        gameEnded = false;
+        options = new String[]{"START", "EXIT"};
+        currentSelection = 0;
+    }
+
+    public void setGameEnded(boolean ended) {
+        gameEnded = ended;
+        if (ended) {
+            options = new String[]{"RESTART", "EXIT"};
+        } else {
+            options = new String[]{"START", "EXIT"};
+        }
+        currentSelection = 0;
     }
 
     @Override
@@ -49,13 +63,24 @@ public class MenuState extends State {
         }
         
         if (keyManager.G) {
-            switch(currentSelection) {
-                case 0: // START
-                    State.setState(new CharacterSelectState(game));
-                    break;
-                case 1: // EXIT
-                    System.exit(0);
-                    break;
+            if (gameEnded) {
+                switch(currentSelection) {
+                    case 0: // RESTART
+                        State.setState(game.getGameState());
+                        break;
+                    case 1: // EXIT
+                        System.exit(0);
+                        break;
+                }
+            } else {
+                switch(currentSelection) {
+                    case 0: // START
+                        State.setState(new CharacterSelectState(game));
+                        break;
+                    case 1: // EXIT
+                        System.exit(0);
+                        break;
+                }
             }
         }
     }
@@ -109,10 +134,10 @@ public class MenuState extends State {
 
     @Override
     public Rectangle getDeejayHitBounds() { return new Rectangle(0, 0, 0, 0); }
-    
+
     @Override
     public Rectangle getDeejayAttackBounds() { return new Rectangle(0, 0, 0, 0); }
-    
+
     @Override
     public int getRyuX() { return 0; }
     
@@ -121,6 +146,4 @@ public class MenuState extends State {
 
     @Override
     public int getDeejayX() { return 0; }
-    
-    
-} 
+}
