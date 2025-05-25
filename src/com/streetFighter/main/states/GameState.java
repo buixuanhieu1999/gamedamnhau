@@ -34,11 +34,6 @@ public class GameState extends State {
 	private long lastSelectionTime = 0;
 	private static final long SELECTION_COOLDOWN = 200;
 
-	@Override
-	public void music() {
-		System.out.println("Playing game state music...");
-	}
-	
 	// constructor
 	public GameState(Game game) {
 		super(game);

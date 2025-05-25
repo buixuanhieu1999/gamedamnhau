@@ -104,11 +104,6 @@ public class MapSelectState extends State {
         g.drawString(instructions, (Game.WIDTH * Game.SCALE - instrWidth) / 2, 350);
     }
 
-    @Override
-    public void music() {
-        // Add music implementation if needed
-    }
-
     // Required abstract method implementations
     @Override
     public Rectangle getRyuHitBounds() { return new Rectangle(0, 0, 0, 0); }

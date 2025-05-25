@@ -196,11 +196,6 @@ public class CharacterSelectState extends State {
         }
     }
 
-    @Override
-    public void music() {
-        // Add music implementation if needed
-    }
-
     // Required abstract method implementations
     @Override
     public Rectangle getRyuHitBounds() { return new Rectangle(0, 0, 0, 0); }
