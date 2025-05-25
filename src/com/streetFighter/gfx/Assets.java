@@ -100,18 +100,18 @@ public class Assets {
 
 	// ground attack
 	public static BufferedImage[]   deejay_punch           = new BufferedImage[3], 
-					deejay_quick_punch     = new BufferedImage[3],
-					deejay_crouch_punch    = new BufferedImage[3],
-					deejay_crouch_attack   = new BufferedImage[8],
-					deejay_uppercut        = new BufferedImage[8];
+					deejay_quick_punch     = new BufferedImage[2],
+					deejay_crouch_punch    = new BufferedImage[4],
+					deejay_crouch_attack   = new BufferedImage[3],
+					deejay_uppercut        = new BufferedImage[7];
 
 	// ground kick
-	public static BufferedImage[]   deejay_kick_low        = new BufferedImage[5],
-					deejay_upper_kick      = new BufferedImage[9];
+	public static BufferedImage[]   deejay_kick_low        = new BufferedImage[4],
+					deejay_upper_kick      = new BufferedImage[7];
 
 	// air attack
-	public static BufferedImage[]   deejay_air_punch       = new BufferedImage[6],
-					deejay_air_kick        = new BufferedImage[5],
+	public static BufferedImage[]   deejay_air_punch       = new BufferedImage[4],
+					deejay_air_kick        = new BufferedImage[3],
 					deejay_punch_down      = new BufferedImage[4];
 	// jumps
 	public static BufferedImage[]   deejay_back_flip       = new BufferedImage[7],
@@ -120,13 +120,13 @@ public class Assets {
 
 	// hurt
 	public static BufferedImage[]   deejay_crouch_hit      = new BufferedImage[2],
-					deejay_crouch_hit_back = new BufferedImage[4],
+					deejay_crouch_hit_back = new BufferedImage[2],
 					deejay_hit_stand       = new BufferedImage[2],
-					deejay_hit_stand_back  = new BufferedImage[4],
-					deejay_knockback       = new BufferedImage[4],
+					deejay_hit_stand_back  = new BufferedImage[5],
+					deejay_knockback       = new BufferedImage[5],
 					deejay_recover         = new BufferedImage[5];
 	// misc.
-	public static BufferedImage[]   deejay_win             = new BufferedImage[10],
+	public static BufferedImage[]   deejay_win             = new BufferedImage[7],
 					deejay_dead            = new BufferedImage[1];
 	
 
@@ -352,7 +352,7 @@ public class Assets {
 			deejay_jump[i] = ss_deejay_jump.crop(68, 128, 68 * i, 0);
 		
 	
-			for (int i = 0; i <7; i++)
+		for (int i = 0; i <7; i++)
 			deejay_front_flip[i] = ss_deejay_front_flip.crop(144, 136, 144 * i, 0);
 		
 		for (int i = 0; i <7; i++) 
