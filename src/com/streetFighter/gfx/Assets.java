@@ -320,8 +320,8 @@ public class Assets {
 		SpriteSheet ss_deejay_quick_punch     = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/quick_punch.png"));;  // placeholder
 		SpriteSheet ss_deejay_upper_kick      = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/upper_kick.png"));;  // placeholder
 		SpriteSheet ss_deejay_jump            = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/jump.png"));  // placeholder
-		SpriteSheet ss_deejay_front_flip      = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/flip.png"));  // placeholder
-		SpriteSheet ss_deejay_back_flip       = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/flip.png"));  // placeholder
+		SpriteSheet ss_deejay_front_flip      = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/front_flip.png"));  // placeholder
+		SpriteSheet ss_deejay_back_flip       = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/back_flip.png"));  // placeholder
 		SpriteSheet ss_deejay_air_punch       = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/air_punch.png"));;  // placeholder
 		SpriteSheet ss_deejay_air_kick        = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/air_kick.png"));;  // placeholder
 		SpriteSheet ss_deejay_punch_down      = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/punch_down.png"));;  // placeholder
@@ -330,7 +330,7 @@ public class Assets {
 
 		// basic movement:
 		for (int i = 0; i < 8; i++)
-			deejay_idle[i] = ss_deejay_idle.crop(75, 110, 75 * i, 0);
+			deejay_idle[i] = ss_deejay_idle.crop(84, 104, 84 * i, 0);
 
 		for (int i = 0; i < 6; i++)
 			deejay_parry_f[i] = ss_deejay_parry_front.crop(90, 111, 90 * i, 0);
@@ -341,7 +341,7 @@ public class Assets {
 			deejay_parry_b[i] = ss_deejay_parry_back.crop(91, 112, 91 * i, 0);
 
 		
-		 	deejay_crouch[0] = ss_deejay_crouch.crop(54, 73, 0, 0);
+		deejay_crouch[0] = ss_deejay_crouch.crop(56, 68, 0, 0);
 
 			
 		/*deejay_jump[0] = ss_deejay_jump.crop(70, 154, 0, 0);
@@ -349,18 +349,18 @@ public class Assets {
 		deejay_jump[2] = ss_deejay_jump.crop(70, 154, 0, 0);*/
 		
 		for (int i = 0; i < 5; i++) 
-			deejay_jump[i] = ss_deejay_jump.crop(68, 128, 68 * i, 0);
+			deejay_jump[i] = ss_deejay_jump.crop(78, 128, 78 * i, 0);
 		
 	
 		for (int i = 0; i <7; i++)
-			deejay_front_flip[i] = ss_deejay_front_flip.crop(144, 136, 144 * i, 0);
+			deejay_front_flip[i] = ss_deejay_front_flip.crop(111, 136, 111 * i, 0);
 		
 		for (int i = 0; i <7; i++) 
-			deejay_back_flip[i] = ss_deejay_back_flip.crop(144, 136, 144 * i, 0);
+			deejay_back_flip[i] = ss_deejay_back_flip.crop(111, 136, 111 * i, 0);
 		
 	
 	    for (int i = 0; i < 3; i++) 
-			deejay_punch[i] = ss_deejay_punch.crop(117, 104, 117 * i, 0);
+			deejay_punch[i] = ss_deejay_punch.crop(106, 100, 106 * i, 0);
 
 		/* for (int i = 0; i < 3; i++) 
 			deejay_quick_punch[i] = ss_deejay_quick_punch.crop(94, 102, 94 * i, 0);
