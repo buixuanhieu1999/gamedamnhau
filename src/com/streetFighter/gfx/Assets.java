@@ -340,7 +340,7 @@ public class Assets {
 			deejay_parry_b[i] = ss_deejay_parry_back.crop(91, 112, 91 * i, 0);
 
 		
-		 	deejay_crouch[0] = ss_deejay_crouch.crop(54, 73, 0, 0);
+		deejay_crouch[0] = ss_deejay_crouch.crop(54, 73, 0, 0);
 
 			
 		/*deejay_jump[0] = ss_deejay_jump.crop(70, 154, 0, 0);
@@ -351,7 +351,7 @@ public class Assets {
 			deejay_jump[i] = ss_deejay_jump.crop(68, 128, 68 * i, 0);
 		
 	
-			for (int i = 0; i <7; i++)
+		for (int i = 0; i <7; i++)
 			deejay_front_flip[i] = ss_deejay_front_flip.crop(144, 136, 144 * i, 0);
 		
 		for (int i = 0; i <7; i++) 
@@ -362,7 +362,7 @@ public class Assets {
 			deejay_punch[i] = ss_deejay_punch.crop(117, 104, 117 * i, 0);
 		
 	 // hurt
-	 		for (int i = 0; i < 5; i++) 
+		for (int i = 0; i < 5; i++)
 	 			deejay_hit_stand_back[i] = ss_deejay_hit_stand_back.crop(100, 101, 100 * i, 0);
 	    /*
 	    for (int i = 0; i < 2; i++) 
