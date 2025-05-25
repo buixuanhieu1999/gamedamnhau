@@ -312,19 +312,19 @@ public class Assets {
 
 		// Use available sprites as placeholders for missing ones
 		SpriteSheet ss_deejay_crouch          = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/crouch.png"));  // placeholder
-		SpriteSheet ss_deejay_crouch_punch    = ss_deejay_idle;  // placeholder
-		SpriteSheet ss_deejay_hit_stand_back  = ss_deejay_idle;  // placeholder
-		SpriteSheet ss_deejay_kick_low        = ss_deejay_idle;  // placeholder
+		SpriteSheet ss_deejay_crouch_punch    = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/crouch_punch.png"));  // placeholder
+		SpriteSheet ss_deejay_hit_stand_back  = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/hit_stand_b"));;  // placeholder
+		SpriteSheet ss_deejay_kick_low        = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/kick_low.png"));;  // placeholder
 		SpriteSheet ss_deejay_parry_back      = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/parry_b.png"));   // use parry_f as placeholder
 		SpriteSheet ss_deejay_punch           = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/punch.png"));
-		SpriteSheet ss_deejay_quick_punch     = ss_deejay_idle;  // placeholder
-		SpriteSheet ss_deejay_upper_kick      = ss_deejay_idle;  // placeholder
+		SpriteSheet ss_deejay_quick_punch     = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/quick_punch.png"));;  // placeholder
+		SpriteSheet ss_deejay_upper_kick      = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/upper_kick.png"));;  // placeholder
 		SpriteSheet ss_deejay_jump            = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/jump.png"));  // placeholder
 		SpriteSheet ss_deejay_front_flip      = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/flip.png"));  // placeholder
 		SpriteSheet ss_deejay_back_flip       = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/flip.png"));  // placeholder
-		SpriteSheet ss_deejay_air_punch       = ss_deejay_idle;  // placeholder
-		SpriteSheet ss_deejay_air_kick        = ss_deejay_idle;  // placeholder
-		SpriteSheet ss_deejay_punch_down      = ss_deejay_idle;  // placeholder
+		SpriteSheet ss_deejay_air_punch       = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/air_punch.png"));;  // placeholder
+		SpriteSheet ss_deejay_air_kick        = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/air_kick.png"));;  // placeholder
+		SpriteSheet ss_deejay_punch_down      = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/punch_down.png"));;  // placeholder
 
 		// ============================================ SPRITE CROPPING: DEEJAY ============================================
 
