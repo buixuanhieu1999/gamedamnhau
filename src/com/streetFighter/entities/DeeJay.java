@@ -1,134 +1,141 @@
 package com.streetFighter.entities;
 
-import com.streetFighter.gfx.Animation;
-import com.streetFighter.gfx.Assets;
-import com.streetFighter.main.Game;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
-public class Ryu extends Creature {
+import com.streetFighter.gfx.Animation;
+import com.streetFighter.gfx.Assets;
+import com.streetFighter.main.Game;
+import com.streetFighter.main.states.GameState;
+import com.streetFighter.main.states.State;
 
-	// Ryu: vars...
-	private int health;
-	private int velX, velY;
-	private Game game;
-	private boolean facingRight = true; // By default Ryu faces right
-	private int playerNumber = 1; // Default to player 1, can be 1 or 2
+public class DeeJay extends Creature {
 
-	// STATES
+    // DeeJay: vars...
+    private int health;
+    private int velX, velY;
+    private Game game;
+    private boolean facingRight = true; // By default DeeJay faces right
+    private int playerNumber = 1; // Default to player 1, can be 1 or 2
 
-	// basic movement
-	private final int IDLING         = 0;
-	private final int PARRYING_R     = 1; 
-	private final int PARRYING_L     = 2;
-	private final int CROUCHING      = 3;
-	private final int JUMPING        = 9;
-	private final int FRONT_FLIPPING = 10;
-	private final int BACK_FLIPPING  = 11;
+    // STATES
 
-	// ground attacks: lettter stands for respective key
-	private final int ATTACKING_G    = 4;
-	private final int ATTACKING_H    = 5;
-	private final int ATTACKING_B    = 6;
-	private final int ATTACKING_N    = 7;
+    // basic movement
+    private final int IDLING         = 0;
+    private final int PARRYING_R     = 1; 
+    private final int PARRYING_L     = 2;
+    private final int CROUCHING      = 3;
+    private final int JUMPING        = 9;
+    private final int FRONT_FLIPPING = 10;
+    private final int BACK_FLIPPING  = 11;
 
-	// crouch attacks: C for crouch
-	private final int ATTACKING_C_G  = 8;
+    // ground attacks: letter stands for respective key
+    private final int ATTACKING_G    = 4;
+    private final int ATTACKING_H    = 5;
+    private final int ATTACKING_B    = 6;
+    private final int ATTACKING_N    = 7;
 
-	// air attacks: A for air
-	private final int ATTACKING_A_G  = 12;
-	private final int ATTACKING_A_H  = 13;
-	private final int ATTACKING_A_B  = 14;	
+    // crouch attacks: C for crouch
+    private final int ATTACKING_C_G  = 8;
 
-	// hurting anims
-	private final int HURTING = 15;
-	// dummy var for checks
-	private final int DUMMY = 19;
+    // air attacks: A for air
+    private final int ATTACKING_A_G  = 12;
+    private final int ATTACKING_A_H  = 13;
+    private final int ATTACKING_A_B  = 14;    
 
-	// platformer
-	private final int GRAV = 1;
-	private final int TERMINAL_VELOCITY = 2;
-	private final int JUMP_SPEED = -10;
+    // hurting anims
+    private final int HURTING = 15;
+    // dummy var for checks
+    private final int DUMMY = 19;
 
-	private boolean[] anims = new boolean[20];
+    // platformer
+    private final int GRAV = 1;
+    private final int TERMINAL_VELOCITY = 2;
+    private final int JUMP_SPEED = -10;
 
-	// movement animations
-	private Animation idle;
-	private Animation parry_f, parry_b;
-	private Animation crouch;
-	private Animation jump, front_flip, back_flip;
+    private boolean[] anims = new boolean[20];
 
-	// ground attack animations
-	private Animation attack_G, attack_H, attack_B, attack_N;
+    // movement animations
+    private Animation idle;
+    private Animation parry_f, parry_b;
+    private Animation crouch;
+    private Animation jump, front_flip, back_flip;
 
-	// crouch attack animations
-	private Animation attack_C_G;
+    // ground attack animations
+    private Animation attack_G, attack_H, attack_B, attack_N;
 
-	// air attacks animation
-	private Animation attack_A_G, attack_A_H, attack_A_B;
+    // crouch attack animations
+    private Animation attack_C_G;
 
-	// ground hurt
-	private Animation hurting_G;
+    // air attacks animation
+    private Animation attack_A_G, attack_A_H, attack_A_B;
 
-	// cooldowns
-	private boolean hurting;
-	private long lastTimer;
+    // ground hurt
+    private Animation hurting_G;
 
-	// random generator
-	Random rand;
+    // cooldowns
+    private boolean hurting;
+    private long lastTimer;
 
-	public Ryu(Game game, float x, float y) {
-		this(game, x, y, 1); // Default to player 1
-	}
-	
-	public Ryu(Game game, float x, float y, int playerNumber) {
-		super(x, y);
-		// initialise game in constuctor to access vars
-		this.game = game;
-		this.playerNumber = playerNumber;
-		
-		// Determine facing direction based on position
-		// If Ryu is on the right side, he should face left
-		this.facingRight = (x < Game.WIDTH);
+    // random generator
+    Random rand;
 
-		// instantiate random gen
-		rand = new Random();
+    public DeeJay(Game game, float x, float y) {
+        this(game, x, y, 1); // Default to player 1
+    }
+    
+    public DeeJay(Game game, float x, float y, int playerNumber) {
+        super(x, y);
+        // initialise game in constuctor to access vars
+        this.game = game;
+        this.playerNumber = playerNumber;
+        
+        // Determine facing direction based on position
+        // If DeeJay is on the right side, he should face left
+        this.facingRight = (x < Game.WIDTH);
 
-		// health to 100
-		health = 100;
+        rand = new Random();
 
-		// movement
-		idle 	   = new Animation(100, Assets.idle);
-		parry_f    = new Animation(100, Assets.parry_f);
-		parry_b    = new Animation(100, Assets.parry_b);
-		crouch     = new Animation(100, Assets.crouch);
-		jump 	   = new Animation(85, Assets.jump);
-		front_flip = new Animation(120, Assets.front_flip);
-		back_flip  = new Animation(120, Assets.back_flip);
+        health = 100;
+        hurting = false;
 
-		// ground attacks
-		attack_G   = new Animation(100, Assets.punch);
-		attack_H   = new Animation(100, Assets.quick_punch);
-		attack_B   = new Animation(75, Assets.upper_kick);
-		attack_N   = new Animation(100, Assets.kick_low);
+        // movement
+        idle        = new Animation(100, Assets.deejay_idle);
+        parry_f     = new Animation(100, Assets.deejay_parry_f);
+        parry_b     = new Animation(100, Assets.deejay_parry_b);
+        crouch      = new Animation(100, Assets.deejay_crouch);
+        jump        = new Animation(400, Assets.deejay_jump);
+        front_flip  = new Animation(120, Assets.deejay_front_flip);
+        
+        back_flip   = new Animation(120, Assets.deejay_back_flip);
+		back_flip.setReverse(true);
 
-		// crouch attack
-		attack_C_G = new Animation(50, Assets.crouch_punch);
+        // ground attacks
+        attack_G    = new Animation(150, Assets.deejay_punch);
+        attack_H    = new Animation(100, Assets.deejay_quick_punch);
+        attack_B    = new Animation(75, Assets.deejay_upper_kick);
+        attack_N    = new Animation(100, Assets.deejay_kick_low);
 
-		// air attacks
-		attack_A_G = new Animation(100, Assets.air_punch);
-		attack_A_H = new Animation(100, Assets.punch_down);
-		attack_A_B = new Animation(100, Assets.air_kick);		
+        // crouch attack
+        attack_C_G  = new Animation(50, Assets.deejay_crouch_punch);
 
-		// hurting anim
-		hurting_G   = new Animation(100, Assets.hit_stand_back);
-	}
+        // air attacks
+        attack_A_G  = new Animation(100, Assets.deejay_air_punch);
+        attack_A_H  = new Animation(100, Assets.deejay_punch_down);
+        attack_A_B  = new Animation(100, Assets.deejay_air_kick);        
 
-	@Override
+        // hurting anim
+        hurting_G   = new Animation(100, Assets.deejay_hit_stand_back);
+    }
+
+   	@Override
 	public void tick() {
 
 		// tick movement
@@ -138,6 +145,7 @@ public class Ryu extends Creature {
 		// update anims
 		parry_b.tick();		
 		parry_f.tick();	
+
 
 		// update attacks animations
 		if (anims[ATTACKING_G])
@@ -164,11 +172,9 @@ public class Ryu extends Creature {
 		if (anims[ATTACKING_A_B])
 			attack_A_B.tick();
 
-		// If hurting, tick the animation
-		if (hurting) {	
+		if (anims[HURTING])
 			hurting_G.tick();
-		}
-
+		
 		// Reset hurting state after 400ms
 		if (hurting && System.currentTimeMillis() - lastTimer > 400) {
 			anims[HURTING] = false;
@@ -177,7 +183,7 @@ public class Ryu extends Creature {
 
 		// if on the ground		
 		if (y == 280) {
-			// Check appropriate controls based on which player is controlling this Ryu
+			// Check appropriate controls based on which player is controlling this DeeJay
 			boolean goLeft = (playerNumber == 1) ? game.getKeyManager().left : game.getKeyManager().left1;
 			boolean goRight = (playerNumber == 1) ? game.getKeyManager().right : game.getKeyManager().right1;
 			boolean goUp = (playerNumber == 1) ? game.getKeyManager().up : game.getKeyManager().up1;
@@ -304,7 +310,7 @@ public class Ryu extends Creature {
 			}
 			// otherwise, player is in air
 		} else {
-			// Check appropriate controls based on which player is controlling this Ryu
+			// Check appropriate controls based on which player is controlling this DeeJay
 			boolean attackG = (playerNumber == 1) ? game.getKeyManager().G : game.getKeyManager().N4;
 			boolean attackH = (playerNumber == 1) ? game.getKeyManager().H : game.getKeyManager().N5;
 			boolean attackB = (playerNumber == 1) ? game.getKeyManager().B : game.getKeyManager().N1;
@@ -359,6 +365,7 @@ public class Ryu extends Creature {
 			}
 		}
 
+		// collisions
 		collisions();
 
 		// update horizontal pos.
@@ -436,6 +443,24 @@ public class Ryu extends Creature {
 		// This method is kept for compatibility but damage is handled externally
 	}
 
+	// Add damage method to handle attacks
+	public void takeDamage() {
+		// If not already hurting...
+		if (!hurting) {
+			handleAnims(HURTING);
+			lastTimer = System.currentTimeMillis();
+			hurting = true;
+			health -= 10;
+			
+			// Add knockback effect
+			if (facingRight) {
+				x -= 20; // Knocked back left
+			} else {
+				x += 20; // Knocked back right
+			}
+		}
+	}
+
 	@Override
 	public void render(Graphics g) {
 
@@ -448,33 +473,21 @@ public class Ryu extends Creature {
 			g2d.translate(-k, k);
 		}
 
-		// draw shadow - adjust position based on facing direction
+
+		// draw shadow
 		g.setColor(new Color(0,0,0, 125));
+		g.fillOval((int) x - 4, 188 * Game.SCALE, 64, 16);
+
+		// If DeeJay is facing left, flip the sprite horizontally
 		if (!facingRight) {
-			g.fillOval((int) x - 60, 188 * Game.SCALE, 64, 16);
+			drawDeeJayFacingLeft(g);
 		} else {
-			g.fillOval((int) x - 4, 188 * Game.SCALE, 64, 16);
+			drawDeeJayFacingRight(g);
 		}
-
-		// If Ryu is facing left, flip the sprite horizontally
-		if (!facingRight) {
-			drawRyuFacingLeft(g);
-		} else {
-			drawRyuFacingRight(g);
-		}
-
-		// draw hitboxes
-
-		/*		g.setColor(Color.WHITE);
-		g.drawRect(getHitBounds().x, getHitBounds().y, getHitBounds().width, getHitBounds().height);
-
-		g.setColor(Color.RED);
-		g.drawRect(getAttackBounds().x, getAttackBounds().y, getAttackBounds().width, getAttackBounds().height);*/
-
 	}
-
-	private void drawRyuFacingRight(Graphics g) {
-		// Original rendering code for Ryu facing right
+	
+	private void drawDeeJayFacingRight(Graphics g) {
+		// Original rendering code for DeeJay facing right
 		if (anims[PARRYING_R])
 			g.drawImage(getCurrentAnimFrame(), (int) (x - 9), (int) (y - 3), null);	
 
@@ -524,10 +537,10 @@ public class Ryu extends Creature {
 			g.drawImage(getCurrentAnimFrame(), (int) x, (int) y, null);
 	}
 	
-	private void drawRyuFacingLeft(Graphics g) {
-		// Flipped rendering code for Ryu facing left
+	private void drawDeeJayFacingLeft(Graphics g) {
+		// Flipped rendering code for DeeJay facing left
 		if (anims[PARRYING_R])
-			g.drawImage(getCurrentAnimFrame(), (int) (x + 9), (int) (y - 3), -getCurrentAnimFrame().getWidth(), getCurrentAnimFrame().getHeight(), null);	
+			g.drawImage(getCurrentAnimFrame(), (int) (x ), (int) (y - 3), -getCurrentAnimFrame().getWidth(), getCurrentAnimFrame().getHeight(), null);	
 
 		else if (anims[PARRYING_L])
 			g.drawImage(getCurrentAnimFrame(), (int) (x + 4), (int) y, -getCurrentAnimFrame().getWidth(), getCurrentAnimFrame().getHeight(), null);	
@@ -627,7 +640,6 @@ public class Ryu extends Creature {
 	}
 
 	public Rectangle getHitBounds() {
-
 		if (facingRight) {
 			// Right-facing hitboxes
 			if (anims[CROUCHING])
@@ -635,7 +647,7 @@ public class Ryu extends Creature {
 			else if (anims[ATTACKING_C_G])
 				return new Rectangle((int) x, (int) y + 30, 60, 80);	
 			else
-				return new Rectangle((int) x, (int) y, 60, 110);
+				return new Rectangle((int) x, (int) y, 69, 110);
 		} else {
 			// Left-facing hitboxes
 			if (anims[CROUCHING])
@@ -643,7 +655,7 @@ public class Ryu extends Creature {
 			else if (anims[ATTACKING_C_G])
 				return new Rectangle((int) x - 60, (int) y + 30, 60, 80);	
 			else
-				return new Rectangle((int) x - 60, (int) y, 60, 110);
+				return new Rectangle((int) x - 69, (int) y, 69, 110);
 		}
 	}
 
@@ -654,7 +666,7 @@ public class Ryu extends Creature {
 			if (anims[ATTACKING_G] && attack_G.index == 2)
 				return new Rectangle((int) x + 40, (int) y + 10, 60, 30);
 
-			if (anims[ATTACKING_H] && attack_H.index == 2)
+			if (anims[ATTACKING_H] && attack_H.index >= 1 && attack_H.index <= 2)
 				return new Rectangle((int) x + 40, (int) y + 10, 60, 30);
 
 			if (anims[ATTACKING_B] && attack_B.index >= 4 && attack_B.index <= 6)
@@ -677,28 +689,28 @@ public class Ryu extends Creature {
 		} else {
 			// Left-facing attack hitboxes (mirrored)
 			if (anims[ATTACKING_G] && attack_G.index == 2)
-				return new Rectangle((int) x - 60, (int) y + 10, 60, 30);
+				return new Rectangle((int) x - 100, (int) y + 10, 60, 30);
 
-			if (anims[ATTACKING_H] && attack_H.index == 2)
-				return new Rectangle((int) x - 60, (int) y + 10, 60, 30);
+			if (anims[ATTACKING_H] && attack_H.index >= 1 && attack_H.index <= 2)
+				return new Rectangle((int) x - 100, (int) y + 10, 60, 30);
 
 			if (anims[ATTACKING_B] && attack_B.index >= 4 && attack_B.index <= 6)
-				return new Rectangle((int) x - 60, (int) y, 60, 50);
+				return new Rectangle((int) x - 120, (int) y, 60, 50);
 
 			if (anims[ATTACKING_N] && attack_N.index >= 3 && attack_N.index <= 4)
-				return new Rectangle((int) x - 60, (int) y + 50, 60, 50);
+				return new Rectangle((int) x - 120, (int) y + 50, 60, 50);
 
 			if (anims[ATTACKING_C_G] && attack_C_G.index >= 0 && attack_C_G.index <= 1)
-				return new Rectangle((int) x - 60, (int) y + 40, 60, 30);
+				return new Rectangle((int) x - 90, (int) y + 40, 60, 30);
 
 			if (anims[ATTACKING_A_G] && attack_A_G.index >= 2 && attack_A_G.index <= 3)
-				return new Rectangle((int) x - 60, (int) y + 20, 60, 50);
+				return new Rectangle((int) x - 90, (int) y + 20, 60, 50);
 
 			if (anims[ATTACKING_A_H] && attack_A_H.index >= 0 && attack_A_H.index <= 1)
-				return new Rectangle((int) x - 60, (int) y + 20, 60, 50);
+				return new Rectangle((int) x - 90, (int) y + 20, 60, 50);
 
 			if (anims[ATTACKING_A_B] && attack_A_B.index >= 2 && attack_A_B.index <= 3)
-				return new Rectangle((int) x - 60, (int) y + 40, 60, 30);
+				return new Rectangle((int) x - 100, (int) y + 40, 60, 30);
 		}
 
 		return new Rectangle((int) x, (int) y, 0, 0);
@@ -716,6 +728,7 @@ public class Ryu extends Creature {
 	}
 
 	public void handleAirAttacks(Animation anim, int index, boolean attackG, boolean attackH, boolean attackB) {
+
 		// if g, h, b while in air... set all anims to false except called anim
 		if (attackG) {
 			handleAnims(ATTACKING_A_G);
@@ -728,6 +741,7 @@ public class Ryu extends Creature {
 			anim.tick();
 			handleAnims(index);
 		}
+
 	}
 
 	public boolean checkIfRunning() {
@@ -769,26 +783,8 @@ public class Ryu extends Creature {
 	}
 
 	// get x	
-	public int getRyuX() {
+	public int getDeeJayX() {
 		return (int) x;
-	}
-
-	// Add damage method to handle attacks
-	public void takeDamage() {
-		// If not already hurting...
-		if (!hurting) {
-			handleAnims(HURTING);
-			lastTimer = System.currentTimeMillis();
-			hurting = true;
-			health -= 10;
-			
-			// Add knockback effect
-			if (facingRight) {
-				x -= 20; // Knocked back left
-			} else {
-				x += 20; // Knocked back right
-			}
-		}
 	}
 
 }

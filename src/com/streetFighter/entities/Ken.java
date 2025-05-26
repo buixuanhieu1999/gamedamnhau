@@ -1,26 +1,22 @@
 package com.streetFighter.entities;
 
+import com.streetFighter.gfx.Animation;
+import com.streetFighter.gfx.Assets;
+import com.streetFighter.main.Game;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
-
-import com.streetFighter.gfx.Animation;
-import com.streetFighter.gfx.Assets;
-import com.streetFighter.main.Game;
-import com.streetFighter.main.states.GameState;
-import com.streetFighter.main.states.State;
 
 public class Ken extends Creature {
 
 	private int health;
 	private int velX, velY;
 	private Game game;
+	private boolean facingLeft = true; // By default Ken faces left
+	private int playerNumber = 1; // Default to player 1, can be 1 or 2
 
 	// STATES
 
@@ -86,9 +82,18 @@ public class Ken extends Creature {
 
 
 	public Ken(Game game, float x, float y) {
+		this(game, x, y, 1); // Default to player 1
+	}
+	
+	public Ken(Game game, float x, float y, int playerNumber) {
 		super(x, y);
 		// initialise game in constuctor to access vars
 		this.game = game;
+		this.playerNumber = playerNumber;
+		
+		// Determine facing direction based on position
+		// If Ken is on the left side, he should face right
+		this.facingLeft = (x > Game.WIDTH);
 
 		rand = new Random();
 
@@ -158,30 +163,45 @@ public class Ken extends Creature {
 		if (anims[ATTACKING_A_N1])
 			attack_A_N1.tick();
 
+		// If hurting, tick the animation
+		if (hurting) {	
+			hurting_G.tick();
+		}
+
 		if (y == 280){
+			// Check appropriate controls based on which player is controlling this Ken
+			boolean goLeft = (playerNumber == 1) ? game.getKeyManager().left : game.getKeyManager().left1;
+			boolean goRight = (playerNumber == 1) ? game.getKeyManager().right : game.getKeyManager().right1;
+			boolean goUp = (playerNumber == 1) ? game.getKeyManager().up : game.getKeyManager().up1;
+			boolean goDown = (playerNumber == 1) ? game.getKeyManager().down : game.getKeyManager().down1;
+			boolean attackN4 = (playerNumber == 1) ? game.getKeyManager().G : game.getKeyManager().N4;
+			boolean attackN5 = (playerNumber == 1) ? game.getKeyManager().H : game.getKeyManager().N5;
+			boolean attackN1 = (playerNumber == 1) ? game.getKeyManager().B : game.getKeyManager().N1;
+			boolean attackN2 = (playerNumber == 1) ? game.getKeyManager().N : game.getKeyManager().N2;
+			
 			// if press left, move left
-			if (game.getKeyManager().left1 && !game.getKeyManager().up1) {
+			if (goLeft && !goUp) {
 				velX = -2;
 
 				// reset and init true to state
 				handleAnims(PARRYING_L);
 			}
 			// if press right, move forward
-			else if (game.getKeyManager().right1 && !game.getKeyManager().up1) {
+			else if (goRight && !goUp) {
 				velX = 2;
 
 				// reset and init true to state
 				handleAnims(PARRYING_R);
 			} 
 			//if pressing only up
-			else if (game.getKeyManager().up1 && !game.getKeyManager().right1 && !game.getKeyManager().left1 && !anims[JUMPING]) {
+			else if (goUp && !goRight && !goLeft && !anims[JUMPING]) {
 				// jump
 				velY = JUMP_SPEED - 2;
 				y-=1;
 				jump.index = 0;
 			}
 			// if pressing up, right
-			else if (game.getKeyManager().up1 && game.getKeyManager().right1 && !game.getKeyManager().left1 && !anims[FRONT_FLIPPING]) {
+			else if (goUp && goRight && !goLeft && !anims[FRONT_FLIPPING]) {
 				// jump diagonally to the right
 				velY = JUMP_SPEED;
 				velX = 2;
@@ -189,7 +209,7 @@ public class Ken extends Creature {
 				front_flip.index = 0;				
 			}
 			// if pressing up, left
-			else if (game.getKeyManager().up1 && !game.getKeyManager().right1 && game.getKeyManager().left1 && !anims[BACK_FLIPPING]) {
+			else if (goUp && !goRight && goLeft && !anims[BACK_FLIPPING]) {
 				// jump diagonally to the left
 				velY = JUMP_SPEED;
 				velX = -2;
@@ -197,7 +217,7 @@ public class Ken extends Creature {
 				back_flip.index = 0;	
 			}
 			// if press down, crouch
-			else if (!game.getKeyManager().right1 && !game.getKeyManager().left1 && game.getKeyManager().down1){
+			else if (!goRight && !goLeft && goDown){
 
 				// set hor, vertical speed to 0
 				velX = 0;
@@ -205,7 +225,7 @@ public class Ken extends Creature {
 
 				handleAnims(CROUCHING);
 
-				if (game.getKeyManager().N4) {
+				if (attackN4) {
 					velX = 0;
 					velY = 0;
 
@@ -221,7 +241,7 @@ public class Ken extends Creature {
 				resetAnim(attack_C_N4, ATTACKING_C_N4);
 
 			}
-			else if (game.getKeyManager().N4 && !anims[CROUCHING]){
+			else if (attackN4 && !anims[CROUCHING]){
 				// set hor, vertical speed to 0
 				velX = 0;
 				velY = 0;
@@ -229,7 +249,7 @@ public class Ken extends Creature {
 				// reset and init true to state
 				if (checkIfRunning())
 					handleAnims(ATTACKING_N4);
-			} else if (game.getKeyManager().N5 && !anims[CROUCHING]){
+			} else if (attackN5 && !anims[CROUCHING]){
 				// set hor, vertical speed to 0
 				velX = 0;
 				velY = 0;
@@ -237,7 +257,7 @@ public class Ken extends Creature {
 				// reset punch 2
 				if (checkIfRunning())
 					handleAnims(ATTACKING_N5);
-			} else if (game.getKeyManager().N1 && !anims[CROUCHING]){
+			} else if (attackN1 && !anims[CROUCHING]){
 				// set hor, vertical speed to 0
 				velX = 0;
 				velY = 0;
@@ -245,7 +265,7 @@ public class Ken extends Creature {
 				// reset punch
 				if (checkIfRunning())
 					handleAnims(ATTACKING_N1);
-			} else if (game.getKeyManager().N2 && !anims[CROUCHING]){
+			} else if (attackN2 && !anims[CROUCHING]){
 				// set hor, vertical speed to 0
 				velX = 0;
 				velY = 0;
@@ -272,6 +292,10 @@ public class Ken extends Creature {
 			}
 		}// otherwise, player is in air
 		else {
+			// Check appropriate controls based on which player is controlling this Ken
+			boolean attackN4 = (playerNumber == 1) ? game.getKeyManager().G : game.getKeyManager().N4;
+			boolean attackN5 = (playerNumber == 1) ? game.getKeyManager().H : game.getKeyManager().N5;
+			boolean attackN1 = (playerNumber == 1) ? game.getKeyManager().B : game.getKeyManager().N1;
 
 			anims[PARRYING_R] = false;
 			anims[PARRYING_L] = false;
@@ -284,15 +308,15 @@ public class Ken extends Creature {
 			// if moving left
 			if (velX < 0) {
 				// back flip
-				handleAirAttacks(back_flip, BACK_FLIPPING);
+				handleAirAttacks(back_flip, BACK_FLIPPING, attackN4, attackN5, attackN1);
 				// if moving right
 			} else if (velX > 0) {
 				// front flip
-				handleAirAttacks(front_flip, FRONT_FLIPPING);
+				handleAirAttacks(front_flip, FRONT_FLIPPING, attackN4, attackN5, attackN1);
 				// otherwise
 			} else {
 				// jump vertically
-				handleAirAttacks(jump, JUMPING);
+				handleAirAttacks(jump, JUMPING, attackN4, attackN5, attackN1);
 			}
 		}
 
@@ -325,17 +349,10 @@ public class Ken extends Creature {
 
 		collisions();		        	
 
-		// if hurting.. tick anims
-		if (hurting) {	
-			hurting_G.tick();
-
-			// if 400ms has passed, then the anim is complete
-			if (System.currentTimeMillis() - lastTimer > 400) {
-				// set anim to false, hurting to false, and inc timer
-				anims[HURTING] = false;
-				hurting = false;
-				lastTimer += 400;
-			}
+		// Reset hurting state after 400ms
+		if (hurting && System.currentTimeMillis() - lastTimer > 400) {
+			anims[HURTING] = false;
+			hurting = false;
 		}
 
 		// increment x by horizontal speed
@@ -411,29 +428,14 @@ public class Ken extends Creature {
 	}
 
 	public void collisions() {
-
-		if (game.getGameState().getRyuAttackBounds().intersects(getHitBounds())) {
-
-			if (!hurting) {
-				hurting = true;
-				lastTimer = System.currentTimeMillis();
-				handleAnims(HURTING);
-				health-=2;
-			}
-
-			try {
-				TimeUnit.MILLISECONDS.sleep(30);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-
-		} 
-
+		// Collision handling now managed by GameState
+		// This method is kept for compatibility but damage is handled externally
 	}
 
 	@Override
 	public void render(Graphics g) {
 
+		// 2d graphics for transformations
 		Graphics2D g2d = (Graphics2D) g;	
 
 		// when hit, vibrate randomly
@@ -442,13 +444,24 @@ public class Ken extends Creature {
 			g2d.translate(-k, k);
 		}
 
-		// draw shadow
-
+		// draw shadow - adjust position based on facing direction
 		g.setColor(new Color(0,0,0, 125));
-		g.fillOval((int) x - 61, 188 * Game.SCALE, 64, 16);
+		if (!facingLeft) {
+			g.fillOval((int) x - 60, 188 * Game.SCALE, 64, 16);
+		} else {
+			g.fillOval((int) x - 4, 188 * Game.SCALE, 64, 16);
+		}
 
-		// drawing ken
-
+		// If Ken is facing left, flip the sprite horizontally
+		if (!facingLeft) {
+			drawKenFacingLeft(g);
+		} else {
+			drawKenFacingRight(g);
+		}
+	}
+	
+	private void drawKenFacingLeft(Graphics g) {
+		// Original rendering code for Ken facing left
 		if(anims[PARRYING_R])
 			g.drawImage(getCurrentAnimFrame(), (int) (x + 9), (int) (y - 3), -getCurrentAnimFrame().getWidth(), getCurrentAnimFrame().getHeight(),null);	
 
@@ -496,16 +509,57 @@ public class Ken extends Creature {
 
 		else 
 			g.drawImage(getCurrentAnimFrame(), (int) x, (int) y, -getCurrentAnimFrame().getWidth(), getCurrentAnimFrame().getHeight(), null);	
+	}
+	
+	private void drawKenFacingRight(Graphics g) {
+		// New rendering code for Ken facing right (not flipped)
+		if(anims[PARRYING_R])
+			g.drawImage(getCurrentAnimFrame(), (int) (x - 9), (int) (y - 3), null);	
 
+		else if (anims[PARRYING_L])
+			g.drawImage(getCurrentAnimFrame(), (int) (x - 4), (int) y, null);	
 
-		// draw hitboxes
+		else if (anims[CROUCHING])
+			g.drawImage(getCurrentAnimFrame(), (int) x, (int) y + 36, null);	
 
-/*		g.setColor(Color.WHITE);
-		g.drawRect(getHitBounds().x, getHitBounds().y, getHitBounds().width, getHitBounds().height);
+		else if (anims[JUMPING])
+			g.drawImage(getCurrentAnimFrame(), (int) x - 3, (int) y - 20, null);
 
-		g.setColor(Color.RED);
-		g.drawRect(getAttackBounds().x, getAttackBounds().y, getAttackBounds().width, getAttackBounds().height);*/
-		
+		else if (anims[BACK_FLIPPING])
+			g.drawImage(getCurrentAnimFrame(), (int) x - 15, (int) y - 15, null);
+
+		else if (anims[FRONT_FLIPPING])
+			g.drawImage(getCurrentAnimFrame(), (int) x - 15, (int) y - 15, null);
+
+		else if (anims[ATTACKING_N4])
+			g.drawImage(getCurrentAnimFrame(), (int) x, (int) (y + 3), null);
+
+		else if (anims[ATTACKING_N5])
+			g.drawImage(getCurrentAnimFrame(), (int) x, (int) (y + 3), null);
+
+		else if (anims[ATTACKING_N1])
+			g.drawImage(getCurrentAnimFrame(), (int) x, (int) (y - 3), null);
+
+		else if (anims[ATTACKING_N2])
+			g.drawImage(getCurrentAnimFrame(), (int) x, (int) (y - 4), null);
+
+		else if (anims[ATTACKING_C_N4])
+			g.drawImage(getCurrentAnimFrame(), (int) x, (int) y + 37, null);	
+
+		else if (anims[HURTING])
+			g.drawImage(getCurrentAnimFrame(), (int) (x - 15), (int) (y + 1), null);	
+
+		else if (anims[ATTACKING_A_N4])
+			g.drawImage(getCurrentAnimFrame(), (int) x, (int) y - 10, null);
+
+		else if (anims[ATTACKING_A_N5])
+			g.drawImage(getCurrentAnimFrame(), (int) x, (int) y - 10, null);
+
+		else if (anims[ATTACKING_A_N1])
+			g.drawImage(getCurrentAnimFrame(), (int) x - 4, (int) y - 5, null);
+
+		else 
+			g.drawImage(getCurrentAnimFrame(), (int) x, (int) y, null);
 	}
 
 	private BufferedImage getCurrentAnimFrame() {
@@ -564,44 +618,80 @@ public class Ken extends Creature {
 
 	public Rectangle getHitBounds() {
 		// get attack hit boxes for each attack
-		if (anims[CROUCHING])
-			return new Rectangle((int) x - 60, (int) y + 30, 60, 80);
-		else if (anims[ATTACKING_C_N4])
-			return new Rectangle((int) x - 60, (int) y + 30, 60, 80);
-
-
-		return new Rectangle((int) x - 60, (int) y, 60, 110);	
+		if (facingLeft) {
+			// Left-facing hitboxes (original)
+			if (anims[CROUCHING])
+				return new Rectangle((int) x - 60, (int) y + 30, 60, 80);
+			else if (anims[ATTACKING_C_N4])
+				return new Rectangle((int) x - 60, (int) y + 30, 60, 80);
+			else
+				return new Rectangle((int) x - 60, (int) y, 60, 110);
+		} else {
+			// Right-facing hitboxes
+			if (anims[CROUCHING])
+				return new Rectangle((int) x, (int) y + 30, 60, 80);
+			else if (anims[ATTACKING_C_N4])
+				return new Rectangle((int) x, (int) y + 30, 60, 80);
+			else
+				return new Rectangle((int) x, (int) y, 60, 110);
+		}
 	}
 
 	public Rectangle getAttackBounds() {
+		// add specialized hitbox for each individual attack
+		if (facingLeft) {
+			// Left-facing attack hitboxes (mirrored)
+			if (anims[ATTACKING_N4] && attack_N4.index >= 3 && attack_N4.index <= 4)
+				return new Rectangle((int) x - 60, (int) y + 50, 60, 50);
 
-		// draw rectangles for each attack
-		if (anims[ATTACKING_N4] && attack_N4.index >= 3 && attack_N4.index <= 4)
-			return new Rectangle((int) x - 110, (int) y + 10, 60, 30);
+			if (anims[ATTACKING_N5] && attack_N5.index >= 1 && attack_N5.index <= 2)
+				return new Rectangle((int) x - 60, (int) y + 50, 60, 50);
 
-		if (anims[ATTACKING_N5] && attack_N5.index >= 1 && attack_N5.index <= 2)
-			return new Rectangle((int) x - 100, (int) y + 10, 60, 30);
+			if (anims[ATTACKING_N1] && attack_N1.index >= 3 && attack_N1.index <= 6)
+				return new Rectangle((int) x - 60, (int) y, 60, 50);
 
-		if (anims[ATTACKING_N1] && attack_N1.index >= 3 && attack_N1.index <= 6)
-			return new Rectangle((int) x - 140, (int) y + 30, 90, 50);
+			if (anims[ATTACKING_N2] && attack_N2.index >= 1 && attack_N2.index <= 3)
+				return new Rectangle((int) x - 60, (int) y + 50, 60, 50);
+			
+			if (anims[ATTACKING_C_N4] && attack_C_N4.index >= 0 && attack_C_N4.index <= 1)
+				return new Rectangle((int) x - 60, (int) y + 40, 60, 30);
 
-		if (anims[ATTACKING_N2] && attack_N2.index >= 1 && attack_N2.index <= 3)
-			return new Rectangle((int) x - 120, (int) y , 70, 50);
-		
-		if (anims[ATTACKING_A_N4] && attack_A_N4.index >= 1 && attack_A_N4.index <= 3)
-			return new Rectangle((int) x - 80, (int) y + 30, 50, 30);
-		
-		if (anims[ATTACKING_A_N5] && attack_A_N5.index >= 1 && attack_A_N5.index <= 3)
-			return new Rectangle((int) x - 80, (int) y + 20 , 70, 30);
-		
-		if (anims[ATTACKING_A_N1] && attack_A_N1.index >= 1 && attack_A_N1.index <= 3)
-			return new Rectangle((int) x - 120, (int) y + 20, 70, 50);
+			if (anims[ATTACKING_A_N4] && attack_A_N4.index >= 1 && attack_A_N4.index <= 3)
+				return new Rectangle((int) x - 60, (int) y + 20, 60, 50);
 
-		if (anims[ATTACKING_C_N4] && attack_C_N4.index >= 0 && attack_C_N4.index <= 1)
-			return new Rectangle((int) x - 90, (int) y + 40, 60, 30);
+			if (anims[ATTACKING_A_N5] && attack_A_N5.index >= 1 && attack_A_N5.index <= 3)
+				return new Rectangle((int) x - 60, (int) y + 20, 60, 50);
 
+			if (anims[ATTACKING_A_N1] && attack_A_N1.index >= 1 && attack_A_N1.index <= 3)
+				return new Rectangle((int) x - 60, (int) y + 40, 60, 50);
+		} else {
+			// Right-facing attack hitboxes
+			if (anims[ATTACKING_N4] && attack_N4.index >= 3 && attack_N4.index <= 4)
+				return new Rectangle((int) x + 50, (int) y + 50, 60, 50);
 
-		return new Rectangle((int) x - 60, (int) y, 0, 0);
+			if (anims[ATTACKING_N5] && attack_N5.index >= 1 && attack_N5.index <= 2)
+				return new Rectangle((int) x + 50, (int) y + 50, 60, 50);
+
+			if (anims[ATTACKING_N1] && attack_N1.index >= 3 && attack_N1.index <= 6)
+				return new Rectangle((int) x + 50, (int) y, 60, 50);
+
+			if (anims[ATTACKING_N2] && attack_N2.index >= 1 && attack_N2.index <= 3)
+				return new Rectangle((int) x + 50, (int) y + 50, 60, 50);
+			
+			if (anims[ATTACKING_C_N4] && attack_C_N4.index >= 0 && attack_C_N4.index <= 1)
+				return new Rectangle((int) x + 30, (int) y + 40, 60, 30);
+
+			if (anims[ATTACKING_A_N4] && attack_A_N4.index >= 1 && attack_A_N4.index <= 3)
+				return new Rectangle((int) x + 30, (int) y + 20, 60, 50);
+
+			if (anims[ATTACKING_A_N5] && attack_A_N5.index >= 1 && attack_A_N5.index <= 3)
+				return new Rectangle((int) x + 30, (int) y + 20, 60, 50);
+
+			if (anims[ATTACKING_A_N1] && attack_A_N1.index >= 1 && attack_A_N1.index <= 3)
+				return new Rectangle((int) x + 50, (int) y + 40, 60, 50);
+		}
+
+		return new Rectangle((int) x, (int) y, 0, 0);
 	}
 
 	public void handleAnims(int unchanged){
@@ -616,21 +706,19 @@ public class Ken extends Creature {
 
 	}
 
-	public void handleAirAttacks(Animation anim, int index) {
-
+	public void handleAirAttacks(Animation anim, int index, boolean attackN4, boolean attackN5, boolean attackN1) {
 		// if g, h, b while in air... set all anims to false except called anim
-		if (game.getKeyManager().N4) {
+		if (attackN4) {
 			handleAnims(ATTACKING_A_N4);
-		} else if (game.getKeyManager().N5) {
+		} else if (attackN5) {
 			handleAnims(ATTACKING_A_N5);
-		} else if (game.getKeyManager().N1) {
+		} else if (attackN1) {
 			handleAnims(ATTACKING_A_N1);
 		} else if (checkIfRunning()){
 			// update anim and set all to false
 			anim.tick();
 			handleAnims(index);
 		}
-
 	}
 
 	public boolean checkIfRunning() {
@@ -667,5 +755,23 @@ public class Ken extends Creature {
 
 	public int getKenX() {
 		return (int) x;
+	}
+
+	// Add damage method to handle attacks
+	public void takeDamage() {
+		// If not already hurting...
+		if (!hurting) {
+			handleAnims(HURTING);
+			lastTimer = System.currentTimeMillis();
+			hurting = true;
+			health -= 10;
+			
+			// Add knockback effect
+			if (facingLeft) {
+				x += 20; // Knocked back right
+			} else {
+				x -= 20; // Knocked back left
+			}
+		}
 	}
 }

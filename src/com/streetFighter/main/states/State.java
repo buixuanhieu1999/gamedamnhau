@@ -33,13 +33,19 @@ public abstract class State {
 	
 	public abstract void render(Graphics g);
 	
-	public abstract void music();
-		
 	// hitbox methods
+
+
+	
 	public abstract Rectangle getRyuHitBounds();	
 	public abstract Rectangle getRyuAttackBounds();	
 	public abstract Rectangle getKenHitBounds();	
 	public abstract Rectangle getKenAttackBounds();	
-	public abstract int getRyuX();	
-	public abstract int getKenX();	
+
+	public abstract Rectangle getDeejayHitBounds();
+	public abstract Rectangle getDeejayAttackBounds();
+
+	public abstract int getRyuX();
+	public abstract int getKenX();
+	public abstract int getDeejayX();
 }

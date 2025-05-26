@@ -1,12 +1,5 @@
 package com.streetFighter.main;
 
-/**
- * Street Fighter
- * This program attempts to recreate the classic fighter game, Street Fighter. 
- * New concepts: Canvas, implements [...], abstract classes, Threads for Runnables, Image Loader, packagaes, super constructors
- * @author Steven Mathew
- * 15 June 2018 
- */
 
 import java.io.File;
 
@@ -34,10 +27,14 @@ import com.streetFighter.gfx.Assets;
 import com.streetFighter.gfx.ImageLoader;
 import com.streetFighter.gfx.SpriteSheet;
 import com.streetFighter.main.states.GameState;
+import com.streetFighter.main.states.MenuState;
+import com.streetFighter.main.states.CharacterSelectState;
 import com.streetFighter.main.states.State;
+import com.streetFighter.main.states.MapSelectState;
 import com.streetFighter.managers.KeyManager;
+import com.streetFighter.managers.PlayerManager;
 
-@SuppressWarnings({ "unused", "serial" })
+
 public class Game extends Canvas implements Runnable {
 	// declare constants
 	public static final String TITLE  = "Street Fighter II";
@@ -55,6 +52,9 @@ public class Game extends Canvas implements Runnable {
 	// states
 	private State menuState;
 	private State gameState;
+	private State characterSelectState;
+	private State mapSelectState;
+	private int selectedCharacter = -1; // -1 = none, 0 = Ryu, 1 = Ken
 
 	// input
 	private KeyManager keyManager;
@@ -68,6 +68,9 @@ public class Game extends Canvas implements Runnable {
 	
 	// int map
 	private int map = 0;
+	
+	// Add PlayerManager
+	private PlayerManager playerManager;
 	
 	public Game() {
 		// init frame properties
@@ -89,6 +92,9 @@ public class Game extends Canvas implements Runnable {
 		keyManager = new KeyManager();
 		frame.addKeyListener(keyManager);
 		
+		// Initialize player manager
+		playerManager = new PlayerManager(this);
+		
 		// pack everything
 		frame.pack();
 	}
@@ -99,74 +105,19 @@ public class Game extends Canvas implements Runnable {
 	 */
 
 	public synchronized void start() throws IOException {
-		
 		// the program is running...
 		running = true;		
 		
 		// pre-load assets
 		Assets.init();
 			
-		// states
-		gameState = new GameState(this);
-		State.setState(gameState);
+		// Initialize all states
+		menuState = new MenuState(this);
+		characterSelectState = new CharacterSelectState(this);
+		mapSelectState = new MapSelectState(this);
 		
-		// print out title to user
-		System.out.println(" ________  _________  ________  _______   _______  _________        ________ ___  ________  ___  ___  _________  _______   ________          ___  ___");
-		System.out.println("|\\   ____\\|\\___   ___|\\   __  \\|\\  ___ \\ |\\  ___ \\|\\___   ___\\     |\\  _____|\\  \\|\\   ____\\|\\  \\|\\  \\|\\___   ___|\\  ___ \\ |\\   __  \\        |\\  \\|\\  \\ ");
-		System.out.println("\\ \\  \\___|\\|___ \\  \\_\\ \\  \\|\\  \\ \\   __/|\\ \\   __/\\|___ \\  \\_|     \\ \\  \\__/\\ \\  \\ \\  \\___|\\ \\  \\\\\\  \\|___ \\  \\_\\ \\   __/|\\ \\  \\|\\  \\       \\ \\  \\ \\  \\  ");
-		System.out.println(" \\ \\_____  \\   \\ \\  \\ \\ \\   _  _\\ \\  \\_|/_\\ \\  \\_|/__  \\ \\  \\       \\ \\   __\\\\ \\  \\ \\  \\  __\\ \\   __  \\   \\ \\  \\ \\ \\  \\_|/_\\ \\   _  _\\       \\ \\  \\ \\  \\  ");
-		System.out.println("  \\|____|\\  \\   \\ \\  \\ \\ \\  \\\\  \\\\ \\  \\_|\\ \\ \\  \\_|\\ \\  \\ \\  \\       \\ \\  \\_| \\ \\  \\ \\  \\|\\  \\ \\  \\ \\  \\   \\ \\  \\ \\ \\  \\_|\\ \\ \\  \\\\  \\|       \\ \\  \\ \\  \\ ");
-		System.out.println("    ____\\_\\  \\   \\ \\__\\ \\ \\__\\\\ _\\\\ \\_______\\ \\_______\\  \\ \\__\\       \\ \\__\\   \\ \\__\\ \\_______\\ \\__\\ \\__\\   \\ \\__\\ \\ \\_______\\ \\__\\\\ _\\        \\ \\__\\ \\__\\");
-		System.out.println("   |\\_________\\   \\|__|  \\|__|\\|__|\\|_______|\\|_______|   \\|__|        \\|__|    \\|__|\\|_______|\\|__|\\|__|    \\|__|  \\|_______|\\|__|\\|__|        \\|__|\\|__|");
-		System.out.println("   \\|_________|                                                                                                                                           ");
-		
-		// print map selection
-		System.out.println("===========================");		
-		System.out.println("WELCOME! MAP SELECTION...");		
-		System.out.println("1. Forest\n2. Main\n3. Ryu");		
-		System.out.println("===========================");		
-
-		// instantiate scanner, and randomizer and init vars
-		sc = new Scanner(System.in);	
-		rand = new Random();
-		int choice = 0;
-		
-		// ask user for input
-		System.out.println("\nWould you like to select your map or choose a random map?");
-		
-		// while user doesn't make valid choice, keep asking for choice between map/random
-		do {
-			try {
-				System.out.println("Please enter 1 (to select) or 2 (for random).");
-				choice = sc.nextInt();
-			} catch (Exception e) {
-				System.err.println("That is not an integer, warrior.");
-				sc = new Scanner(System.in);
-			}
-		} while (choice < 1 || choice > 2);
-		
-		// if choice is 1, then choose map
-		if(choice == 1) {
-			System.out.println("What map would you like?");
-			do {
-				try {
-					// output to user
-					System.out.println("Please enter an integer from 1-3.");
-					// store var in map
-					map = sc.nextInt();
-									
-				} catch(Exception e) {
-					System.err.println("That is not an integer, warrior.");
-					sc = new Scanner(System.in);
-				}
-				
-				System.out.println(map);
-				
-			} while (map < 1 || map > 3);
-		// if choice is 2, then randomly select a map
-		} else if (choice == 2) {
-			map = rand.nextInt(3) + 1;
-		}
+		// Set initial state to menu
+		State.setState(menuState);
 		
 		// thread this class
 		new Thread(this).start();
@@ -268,7 +219,7 @@ public class Game extends Canvas implements Runnable {
 		
 		Graphics g = bs.getDrawGraphics();
 		
-		// create temp white rect that fills screen
+		// create temp black rect that fills screen
 		g.setColor(new Color(0, 0, 0));
 		g.fillRect(0, 0, getWidth(), getHeight());
 		
@@ -279,17 +230,14 @@ public class Game extends Canvas implements Runnable {
 		ImageIcon mainStage   = new ImageIcon("main_stage.gif");
 		ImageIcon forestStage = new ImageIcon("forest_stage.gif");
 		
-		
-		// decision making: if player chooses a map (as def'd in start() method), draw that map 
-		if (map == 1)
-			g.drawImage(forestStage.getImage(), -900, -220, forestStage.getIconWidth() * 2, forestStage.getIconHeight() * 2,null);
-
-		if (map == 2)
+		// Draw background based on selected map
+		if (map == 1) {
+			g.drawImage(forestStage.getImage(), -900, -220, forestStage.getIconWidth() * 2, forestStage.getIconHeight() * 2, null);
+		} else if (map == 2) {
 			g.drawImage(mainStage.getImage(), -67, -67, null);
-	
-		if (map == 3)
-			g.drawImage(ryuStage.getImage(), -212, 30, ryuStage.getIconWidth() * Game.SCALE, ryuStage.getIconHeight() * Game.SCALE,null);
-		
+		} else if (map == 3) {
+			g.drawImage(ryuStage.getImage(), -212, 30, ryuStage.getIconWidth() * Game.SCALE, ryuStage.getIconHeight() * Game.SCALE, null);
+		}
 		
 		// if current state exist, then render		
 		if (State.getState() != null) {		
@@ -323,6 +271,39 @@ public class Game extends Canvas implements Runnable {
 	 * 	   gets current game state
 	*/
 	public State getGameState() {
+		if (gameState == null) {
+			gameState = new GameState(this);
+		}
 		return gameState;
+	}
+
+	// Add method to set map
+	public void setMap(int mapNumber) {
+		this.map = mapNumber;
+	}
+
+	// Add method to set selected character
+	public void setSelectedCharacter(int character) {
+		this.selectedCharacter = character;
+	}
+
+	// Add method to get selected character
+	public int getSelectedCharacter() {
+		return selectedCharacter;
+	}
+
+	// Add method to get character select state
+	public State getCharacterSelectState() {
+		return characterSelectState;
+	}
+
+	// Add method to get map select state
+	public State getMapSelectState() {
+		return mapSelectState;
+	}
+
+	// Add getter for PlayerManager
+	public PlayerManager getPlayerManager() {
+		return playerManager;
 	}
 }
