@@ -1,7 +1,10 @@
 package com.streetFighter.gfx;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 public class Assets {
 
@@ -186,7 +189,7 @@ public class Assets {
 		for (int i = 0; i < 6; i++) 
 			punch[i] = ss_punch.crop(101, 102, 101 * i, 0);
 
-		for (int i = 0; i < 2; i++) 
+		for (int i = 0; i < 3; i++) 
 			quick_punch[i] = ss_quick_punch.crop(94, 102, 94 * i, 0);
 
 		// crouch attack	
