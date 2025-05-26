@@ -1,20 +1,14 @@
 package com.streetFighter.entities;
 
+import com.streetFighter.gfx.Animation;
+import com.streetFighter.gfx.Assets;
+import com.streetFighter.main.Game;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
-
-import com.streetFighter.gfx.Animation;
-import com.streetFighter.gfx.Assets;
-import com.streetFighter.main.Game;
-import com.streetFighter.main.states.GameState;
-import com.streetFighter.main.states.State;
 
 public class Ken extends Creature {
 
@@ -441,6 +435,7 @@ public class Ken extends Creature {
 	@Override
 	public void render(Graphics g) {
 
+		// 2d graphics for transformations
 		Graphics2D g2d = (Graphics2D) g;	
 
 		// when hit, vibrate randomly
@@ -449,15 +444,19 @@ public class Ken extends Creature {
 			g2d.translate(-k, k);
 		}
 
-		// draw shadow
+		// draw shadow - adjust position based on facing direction
 		g.setColor(new Color(0,0,0, 125));
-		g.fillOval((int) x - 61, 188 * Game.SCALE, 64, 16);
-
-		// If Ken is on left side, he should face right
 		if (!facingLeft) {
-			drawKenFacingRight(g);
+			g.fillOval((int) x - 60, 188 * Game.SCALE, 64, 16);
 		} else {
+			g.fillOval((int) x - 4, 188 * Game.SCALE, 64, 16);
+		}
+
+		// If Ken is facing left, flip the sprite horizontally
+		if (!facingLeft) {
 			drawKenFacingLeft(g);
+		} else {
+			drawKenFacingRight(g);
 		}
 	}
 	
@@ -639,62 +638,60 @@ public class Ken extends Creature {
 	}
 
 	public Rectangle getAttackBounds() {
-
-		// draw rectangles for each attack
+		// add specialized hitbox for each individual attack
 		if (facingLeft) {
-			// Left-facing hitboxes (original)
+			// Left-facing attack hitboxes (mirrored)
 			if (anims[ATTACKING_N4] && attack_N4.index >= 3 && attack_N4.index <= 4)
-				return new Rectangle((int) x - 110, (int) y + 10, 60, 30);
+				return new Rectangle((int) x - 60, (int) y + 50, 60, 50);
 
 			if (anims[ATTACKING_N5] && attack_N5.index >= 1 && attack_N5.index <= 2)
-				return new Rectangle((int) x - 100, (int) y + 10, 60, 30);
+				return new Rectangle((int) x - 60, (int) y + 50, 60, 50);
 
 			if (anims[ATTACKING_N1] && attack_N1.index >= 3 && attack_N1.index <= 6)
-				return new Rectangle((int) x - 140, (int) y + 30, 90, 50);
+				return new Rectangle((int) x - 60, (int) y, 60, 50);
 
 			if (anims[ATTACKING_N2] && attack_N2.index >= 1 && attack_N2.index <= 3)
-				return new Rectangle((int) x - 120, (int) y , 70, 50);
+				return new Rectangle((int) x - 60, (int) y + 50, 60, 50);
 			
-			if (anims[ATTACKING_A_N4] && attack_A_N4.index >= 1 && attack_A_N4.index <= 3)
-				return new Rectangle((int) x - 80, (int) y + 30, 50, 30);
-			
-			if (anims[ATTACKING_A_N5] && attack_A_N5.index >= 1 && attack_A_N5.index <= 3)
-				return new Rectangle((int) x - 80, (int) y + 20 , 70, 30);
-			
-			if (anims[ATTACKING_A_N1] && attack_A_N1.index >= 1 && attack_A_N1.index <= 3)
-				return new Rectangle((int) x - 120, (int) y + 20, 70, 50);
-
 			if (anims[ATTACKING_C_N4] && attack_C_N4.index >= 0 && attack_C_N4.index <= 1)
-				return new Rectangle((int) x - 90, (int) y + 40, 60, 30);
+				return new Rectangle((int) x - 60, (int) y + 40, 60, 30);
+
+			if (anims[ATTACKING_A_N4] && attack_A_N4.index >= 1 && attack_A_N4.index <= 3)
+				return new Rectangle((int) x - 60, (int) y + 20, 60, 50);
+
+			if (anims[ATTACKING_A_N5] && attack_A_N5.index >= 1 && attack_A_N5.index <= 3)
+				return new Rectangle((int) x - 60, (int) y + 20, 60, 50);
+
+			if (anims[ATTACKING_A_N1] && attack_A_N1.index >= 1 && attack_A_N1.index <= 3)
+				return new Rectangle((int) x - 60, (int) y + 40, 60, 50);
 		} else {
-			// Right-facing hitboxes (mirrored)
+			// Right-facing attack hitboxes
 			if (anims[ATTACKING_N4] && attack_N4.index >= 3 && attack_N4.index <= 4)
-				return new Rectangle((int) x + 50, (int) y + 10, 60, 30);
+				return new Rectangle((int) x + 50, (int) y + 50, 60, 50);
 
 			if (anims[ATTACKING_N5] && attack_N5.index >= 1 && attack_N5.index <= 2)
-				return new Rectangle((int) x + 40, (int) y + 10, 60, 30);
+				return new Rectangle((int) x + 50, (int) y + 50, 60, 50);
 
 			if (anims[ATTACKING_N1] && attack_N1.index >= 3 && attack_N1.index <= 6)
-				return new Rectangle((int) x + 50, (int) y + 30, 90, 50);
+				return new Rectangle((int) x + 50, (int) y, 60, 50);
 
 			if (anims[ATTACKING_N2] && attack_N2.index >= 1 && attack_N2.index <= 3)
-				return new Rectangle((int) x + 50, (int) y , 70, 50);
+				return new Rectangle((int) x + 50, (int) y + 50, 60, 50);
 			
-			if (anims[ATTACKING_A_N4] && attack_A_N4.index >= 1 && attack_A_N4.index <= 3)
-				return new Rectangle((int) x + 30, (int) y + 30, 50, 30);
-			
-			if (anims[ATTACKING_A_N5] && attack_A_N5.index >= 1 && attack_A_N5.index <= 3)
-				return new Rectangle((int) x + 10, (int) y + 20 , 70, 30);
-			
-			if (anims[ATTACKING_A_N1] && attack_A_N1.index >= 1 && attack_A_N1.index <= 3)
-				return new Rectangle((int) x + 50, (int) y + 20, 70, 50);
-
 			if (anims[ATTACKING_C_N4] && attack_C_N4.index >= 0 && attack_C_N4.index <= 1)
 				return new Rectangle((int) x + 30, (int) y + 40, 60, 30);
+
+			if (anims[ATTACKING_A_N4] && attack_A_N4.index >= 1 && attack_A_N4.index <= 3)
+				return new Rectangle((int) x + 30, (int) y + 20, 60, 50);
+
+			if (anims[ATTACKING_A_N5] && attack_A_N5.index >= 1 && attack_A_N5.index <= 3)
+				return new Rectangle((int) x + 30, (int) y + 20, 60, 50);
+
+			if (anims[ATTACKING_A_N1] && attack_A_N1.index >= 1 && attack_A_N1.index <= 3)
+				return new Rectangle((int) x + 50, (int) y + 40, 60, 50);
 		}
 
-
-		return new Rectangle((int) x - 60, (int) y, 0, 0);
+		return new Rectangle((int) x, (int) y, 0, 0);
 	}
 
 	public void handleAnims(int unchanged){
