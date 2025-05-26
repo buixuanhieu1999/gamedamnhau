@@ -666,7 +666,7 @@ public class DeeJay extends Creature {
 			if (anims[ATTACKING_G] && attack_G.index == 2)
 				return new Rectangle((int) x + 40, (int) y + 10, 60, 30);
 
-			if (anims[ATTACKING_H] && attack_H.index == 2)
+			if (anims[ATTACKING_H] && attack_H.index >= 1 && attack_H.index <= 2)
 				return new Rectangle((int) x + 40, (int) y + 10, 60, 30);
 
 			if (anims[ATTACKING_B] && attack_B.index >= 4 && attack_B.index <= 6)
@@ -691,7 +691,7 @@ public class DeeJay extends Creature {
 			if (anims[ATTACKING_G] && attack_G.index == 2)
 				return new Rectangle((int) x - 100, (int) y + 10, 60, 30);
 
-			if (anims[ATTACKING_H] && attack_H.index == 2)
+			if (anims[ATTACKING_H] && attack_H.index >= 1 && attack_H.index <= 2)
 				return new Rectangle((int) x - 100, (int) y + 10, 60, 30);
 
 			if (anims[ATTACKING_B] && attack_B.index >= 4 && attack_B.index <= 6)

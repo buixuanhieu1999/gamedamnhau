@@ -93,42 +93,41 @@ public class Assets {
 	// ============================================ SPRITE SHEETS: DEEJAY ============================================
 	
 	// basic movement
-	public static BufferedImage[]   deejay_idle            = new BufferedImage[8], 
-					deejay_parry_f         = new BufferedImage[6], 
-					deejay_parry_b         = new BufferedImage[6],
-					deejay_crouch          = new BufferedImage[1];
+		public static BufferedImage[]   deejay_idle            = new BufferedImage[8], 
+						deejay_parry_f         = new BufferedImage[6], 
+						deejay_parry_b         = new BufferedImage[6],
+						deejay_crouch          = new BufferedImage[1];
 
-	// ground attack
-	public static BufferedImage[]   deejay_punch           = new BufferedImage[3], 
-					deejay_quick_punch     = new BufferedImage[3],
-					deejay_crouch_punch    = new BufferedImage[3],
-					deejay_crouch_attack   = new BufferedImage[8],
-					deejay_uppercut        = new BufferedImage[8];
+		// ground attack
+		public static BufferedImage[]   deejay_punch           = new BufferedImage[3], 
+						deejay_quick_punch     = new BufferedImage[2],
+						deejay_crouch_punch    = new BufferedImage[4],
+						deejay_crouch_attack   = new BufferedImage[8],
+						deejay_uppercut        = new BufferedImage[8];
 
-	// ground kick
-	public static BufferedImage[]   deejay_kick_low        = new BufferedImage[5],
-					deejay_upper_kick      = new BufferedImage[9];
+		// ground kick
+		public static BufferedImage[]   deejay_kick_low        = new BufferedImage[4] ,
+						deejay_upper_kick      = new BufferedImage[7];
 
-	// air attack
-	public static BufferedImage[]   deejay_air_punch       = new BufferedImage[6],
-					deejay_air_kick        = new BufferedImage[5],
-					deejay_punch_down      = new BufferedImage[4];
-	// jumps
-	public static BufferedImage[]   deejay_back_flip       = new BufferedImage[7],
-					deejay_front_flip      = new BufferedImage[7],
-					deejay_jump            = new BufferedImage[5];
+		// air attack
+		public static BufferedImage[]   deejay_air_punch       = new BufferedImage[4],
+						deejay_air_kick        = new BufferedImage[3],
+						deejay_punch_down      = new BufferedImage[4];
+		// jumps
+		public static BufferedImage[]   deejay_back_flip       = new BufferedImage[7],
+						deejay_front_flip      = new BufferedImage[7],
+						deejay_jump            = new BufferedImage[5];
 
-	// hurt
-	public static BufferedImage[]   deejay_crouch_hit      = new BufferedImage[2],
-					deejay_crouch_hit_back = new BufferedImage[4],
-					deejay_hit_stand       = new BufferedImage[2],
-					deejay_hit_stand_back  = new BufferedImage[4],
-					deejay_knockback       = new BufferedImage[4],
-					deejay_recover         = new BufferedImage[5];
-	// misc.
-	public static BufferedImage[]   deejay_win             = new BufferedImage[10],
-					deejay_dead            = new BufferedImage[1];
-	
+		// hurt
+		public static BufferedImage[]   deejay_crouch_hit      = new BufferedImage[2],
+						deejay_crouch_hit_back = new BufferedImage[4],
+						deejay_hit_stand       = new BufferedImage[2],
+						deejay_hit_stand_back  = new BufferedImage[5],
+						deejay_knockback       = new BufferedImage[4],
+						deejay_recover         = new BufferedImage[5];
+		// misc.
+		public static BufferedImage[]   deejay_win             = new BufferedImage[10],
+						deejay_dead            = new BufferedImage[1];
 
 	/**
 	 * @description 
@@ -312,19 +311,19 @@ public class Assets {
 
 		// Use available sprites as placeholders for missing ones
 		SpriteSheet ss_deejay_crouch          = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/crouch.png"));  // placeholder
-		SpriteSheet ss_deejay_crouch_punch    = ss_deejay_idle;  // placeholder
-		SpriteSheet ss_deejay_hit_stand_back  = ss_deejay_idle;  // placeholder
-		SpriteSheet ss_deejay_kick_low        = ss_deejay_idle;  // placeholder
+		SpriteSheet ss_deejay_crouch_punch    = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/crouch_punch.png"));  // placeholder
+		SpriteSheet ss_deejay_hit_stand_back  = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/hit_stand_b.png"));  // placeholder
+		SpriteSheet ss_deejay_kick_low        = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/kick_low.png"));  // placeholder
 		SpriteSheet ss_deejay_parry_back      = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/parry_b.png"));   // use parry_f as placeholder
 		SpriteSheet ss_deejay_punch           = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/punch.png"));
-		SpriteSheet ss_deejay_quick_punch     = ss_deejay_idle;  // placeholder
-		SpriteSheet ss_deejay_upper_kick      = ss_deejay_idle;  // placeholder
+		SpriteSheet ss_deejay_quick_punch     = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/quick_punch.png"));  // placeholder
+		SpriteSheet ss_deejay_upper_kick      = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/upper_kick.png"));  // placeholder
 		SpriteSheet ss_deejay_jump            = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/jump.png"));  // placeholder
 		SpriteSheet ss_deejay_front_flip      = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/flip.png"));  // placeholder
 		SpriteSheet ss_deejay_back_flip       = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/flip.png"));  // placeholder
-		SpriteSheet ss_deejay_air_punch       = ss_deejay_idle;  // placeholder
-		SpriteSheet ss_deejay_air_kick        = ss_deejay_idle;  // placeholder
-		SpriteSheet ss_deejay_punch_down      = ss_deejay_idle;  // placeholder
+		SpriteSheet ss_deejay_air_punch       = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/air_punch.png"));  // placeholder
+		SpriteSheet ss_deejay_air_kick        = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/air_kick.png")); // placeholder
+		SpriteSheet ss_deejay_punch_down      = new SpriteSheet(ImageLoader.loadImage("/textures/deejay/punch_down.png"));   // placeholder
 
 		// ============================================ SPRITE CROPPING: DEEJAY ============================================
 
@@ -341,7 +340,7 @@ public class Assets {
 			deejay_parry_b[i] = ss_deejay_parry_back.crop(91, 112, 91 * i, 0);
 
 		
-		 	deejay_crouch[0] = ss_deejay_crouch.crop(54, 73, 0, 0);
+		deejay_crouch[0] = ss_deejay_crouch.crop(54, 73, 0, 0);
 
 			
 		/*deejay_jump[0] = ss_deejay_jump.crop(70, 154, 0, 0);
@@ -352,7 +351,7 @@ public class Assets {
 			deejay_jump[i] = ss_deejay_jump.crop(68, 128, 68 * i, 0);
 		
 	
-			for (int i = 0; i <7; i++)
+		for (int i = 0; i <7; i++)
 			deejay_front_flip[i] = ss_deejay_front_flip.crop(144, 136, 144 * i, 0);
 		
 		for (int i = 0; i <7; i++) 
@@ -361,33 +360,35 @@ public class Assets {
 	
 	    for (int i = 0; i < 3; i++) 
 			deejay_punch[i] = ss_deejay_punch.crop(117, 104, 117 * i, 0);
-
-		/* for (int i = 0; i < 3; i++) 
-			deejay_quick_punch[i] = ss_deejay_quick_punch.crop(94, 102, 94 * i, 0);
-
+		
+	 // hurt
+		for (int i = 0; i < 5; i++)
+	 			deejay_hit_stand_back[i] = ss_deejay_hit_stand_back.crop(100, 101, 100 * i, 0);
+	    
+	    for (int i = 0; i < 2; i++) 
+			deejay_quick_punch[i] = ss_deejay_quick_punch.crop(113, 102, 113 * i , 0);
+		
 		// crouch attack    
-		for (int i = 0; i < 3; i++) 
-			deejay_crouch_punch[i] = ss_deejay_crouch_punch.crop(86, 72, 86 * i, 0);    
+		for (int i = 0; i < 4; i++) 
+			deejay_crouch_punch[i] = ss_deejay_crouch_punch.crop(109, 87, 109 * i, 0);    
 				
 		// air attacks                
-		for (int i = 0; i < 6; i++) 
-			deejay_air_punch[i] = ss_deejay_air_punch.crop(83, 95, 83 * i, 0);
+		for (int i = 0; i < 4; i++) 
+			deejay_air_punch[i] = ss_deejay_air_punch.crop(105, 116, 105 * i, 0);
 		
 		for (int i = 0; i < 4; i++) 
-			deejay_punch_down[i] = ss_deejay_punch_down.crop(75, 90, 75 * i, 0);
+			deejay_punch_down[i] = ss_deejay_punch_down.crop(127, 98, 127 * i, 0);
 		
-		for (int i = 0; i < 5; i++) 
-			deejay_air_kick[i] = ss_deejay_air_kick.crop(99, 94, 99 * i, 0);
+		for (int i = 0; i < 3; i++) 
+			deejay_air_kick[i] = ss_deejay_air_kick.crop(134, 94, 134 * i, 0);
 
 		// ground kick
-		for (int i = 0; i < 5; i++) 
-			deejay_kick_low[i] = ss_deejay_kick_low.crop(115, 111, 115 * i, 0);
-
-		for (int i = 0; i < 9; i++) 
-			deejay_upper_kick[i] = ss_deejay_upper_kick.crop(110, 111, 110 * i, 0);
-
-		// hurt
 		for (int i = 0; i < 4; i++) 
-			deejay_hit_stand_back[i] = ss_deejay_hit_stand_back.crop(77, 104, 77 * i, 0);*/
+			deejay_kick_low[i] = ss_deejay_kick_low.crop(120, 105, 120 * i, 0);
+		
+		for (int i = 0; i < 7; i++) 
+			deejay_upper_kick[i] = ss_deejay_upper_kick.crop(145, 111, 145 * i, 0);
+
+		
 	}
 }
