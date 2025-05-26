@@ -47,6 +47,7 @@ public class PlayerManager {
             currentSelector = 2;  // Now player 2's turn to select
         } else {
             player2Selection = characterIndex;
+            // Both players have selected, no need to change selector
         }
     }
     
