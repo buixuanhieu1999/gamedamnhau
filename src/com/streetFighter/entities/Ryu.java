@@ -1,16 +1,14 @@
 package com.streetFighter.entities;
 
+import com.streetFighter.gfx.Animation;
+import com.streetFighter.gfx.Assets;
+import com.streetFighter.main.Game;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
-
-import com.streetFighter.gfx.Animation;
-import com.streetFighter.gfx.Assets;
-import com.streetFighter.main.Game;
 
 public class Ryu extends Creature {
 
@@ -450,9 +448,13 @@ public class Ryu extends Creature {
 			g2d.translate(-k, k);
 		}
 
-		// draw shadow
+		// draw shadow - adjust position based on facing direction
 		g.setColor(new Color(0,0,0, 125));
-		g.fillOval((int) x - 4, 188 * Game.SCALE, 64, 16);
+		if (!facingRight) {
+			g.fillOval((int) x - 60, 188 * Game.SCALE, 64, 16);
+		} else {
+			g.fillOval((int) x - 4, 188 * Game.SCALE, 64, 16);
+		}
 
 		// If Ryu is facing left, flip the sprite horizontally
 		if (!facingRight) {
@@ -646,10 +648,9 @@ public class Ryu extends Creature {
 	}
 
 	public Rectangle getAttackBounds() {
-
 		// add specialized hitbox for each individual attack
 		if (facingRight) {
-			// Right-facing hitboxes
+			// Right-facing attack hitboxes
 			if (anims[ATTACKING_G] && attack_G.index == 2)
 				return new Rectangle((int) x + 40, (int) y + 10, 60, 30);
 
@@ -674,30 +675,30 @@ public class Ryu extends Creature {
 			if (anims[ATTACKING_A_B] && attack_A_B.index >= 2 && attack_A_B.index <= 3)
 				return new Rectangle((int) x + 40, (int) y + 40, 60, 30);
 		} else {
-			// Left-facing hitboxes (mirrored)
+			// Left-facing attack hitboxes (mirrored)
 			if (anims[ATTACKING_G] && attack_G.index == 2)
-				return new Rectangle((int) x - 100, (int) y + 10, 60, 30);
+				return new Rectangle((int) x - 60, (int) y + 10, 60, 30);
 
 			if (anims[ATTACKING_H] && attack_H.index == 2)
-				return new Rectangle((int) x - 100, (int) y + 10, 60, 30);
+				return new Rectangle((int) x - 60, (int) y + 10, 60, 30);
 
 			if (anims[ATTACKING_B] && attack_B.index >= 4 && attack_B.index <= 6)
-				return new Rectangle((int) x - 120, (int) y, 60, 50);
+				return new Rectangle((int) x - 60, (int) y, 60, 50);
 
 			if (anims[ATTACKING_N] && attack_N.index >= 3 && attack_N.index <= 4)
-				return new Rectangle((int) x - 120, (int) y + 50, 60, 50);
+				return new Rectangle((int) x - 60, (int) y + 50, 60, 50);
 
 			if (anims[ATTACKING_C_G] && attack_C_G.index >= 0 && attack_C_G.index <= 1)
-				return new Rectangle((int) x - 90, (int) y + 40, 60, 30);
+				return new Rectangle((int) x - 60, (int) y + 40, 60, 30);
 
 			if (anims[ATTACKING_A_G] && attack_A_G.index >= 2 && attack_A_G.index <= 3)
-				return new Rectangle((int) x - 90, (int) y + 20, 60, 50);
+				return new Rectangle((int) x - 60, (int) y + 20, 60, 50);
 
 			if (anims[ATTACKING_A_H] && attack_A_H.index >= 0 && attack_A_H.index <= 1)
-				return new Rectangle((int) x - 90, (int) y + 20, 60, 50);
+				return new Rectangle((int) x - 60, (int) y + 20, 60, 50);
 
 			if (anims[ATTACKING_A_B] && attack_A_B.index >= 2 && attack_A_B.index <= 3)
-				return new Rectangle((int) x - 100, (int) y + 40, 60, 30);
+				return new Rectangle((int) x - 60, (int) y + 40, 60, 30);
 		}
 
 		return new Rectangle((int) x, (int) y, 0, 0);

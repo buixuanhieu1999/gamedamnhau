@@ -1,20 +1,14 @@
 package com.streetFighter.entities;
 
+import com.streetFighter.gfx.Animation;
+import com.streetFighter.gfx.Assets;
+import com.streetFighter.main.Game;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
-
-import com.streetFighter.gfx.Animation;
-import com.streetFighter.gfx.Assets;
-import com.streetFighter.main.Game;
-import com.streetFighter.main.states.GameState;
-import com.streetFighter.main.states.State;
 
 public class DeeJay extends Creature {
 
@@ -119,7 +113,7 @@ public class DeeJay extends Creature {
 
         // ground attacks
         attack_G    = new Animation(150, Assets.deejay_punch);
-        attack_H    = new Animation(100, Assets.deejay_quick_punch);
+        attack_H    = new Animation(150, Assets.deejay_quick_punch);  // Slower animation for quick punch
         attack_B    = new Animation(75, Assets.deejay_upper_kick);
         attack_N    = new Animation(100, Assets.deejay_kick_low);
 
@@ -473,10 +467,13 @@ public class DeeJay extends Creature {
 			g2d.translate(-k, k);
 		}
 
-
-		// draw shadow
+		// draw shadow - adjust position based on facing direction
 		g.setColor(new Color(0,0,0, 125));
-		g.fillOval((int) x - 4, 188 * Game.SCALE, 64, 16);
+		if (!facingRight) {
+			g.fillOval((int) x - 60, 188 * Game.SCALE, 64, 16);
+		} else {
+			g.fillOval((int) x - 4, 188 * Game.SCALE, 64, 16);
+		}
 
 		// If DeeJay is facing left, flip the sprite horizontally
 		if (!facingRight) {
@@ -540,7 +537,7 @@ public class DeeJay extends Creature {
 	private void drawDeeJayFacingLeft(Graphics g) {
 		// Flipped rendering code for DeeJay facing left
 		if (anims[PARRYING_R])
-			g.drawImage(getCurrentAnimFrame(), (int) (x ), (int) (y - 3), -getCurrentAnimFrame().getWidth(), getCurrentAnimFrame().getHeight(), null);	
+			g.drawImage(getCurrentAnimFrame(), (int) (x + 9), (int) (y - 3), -getCurrentAnimFrame().getWidth(), getCurrentAnimFrame().getHeight(), null);	
 
 		else if (anims[PARRYING_L])
 			g.drawImage(getCurrentAnimFrame(), (int) (x + 4), (int) y, -getCurrentAnimFrame().getWidth(), getCurrentAnimFrame().getHeight(), null);	
@@ -647,7 +644,7 @@ public class DeeJay extends Creature {
 			else if (anims[ATTACKING_C_G])
 				return new Rectangle((int) x, (int) y + 30, 60, 80);	
 			else
-				return new Rectangle((int) x, (int) y, 69, 110);
+				return new Rectangle((int) x, (int) y, 60, 110);
 		} else {
 			// Left-facing hitboxes
 			if (anims[CROUCHING])
@@ -655,64 +652,62 @@ public class DeeJay extends Creature {
 			else if (anims[ATTACKING_C_G])
 				return new Rectangle((int) x - 60, (int) y + 30, 60, 80);	
 			else
-				return new Rectangle((int) x - 69, (int) y, 69, 110);
+				return new Rectangle((int) x - 60, (int) y, 60, 110);
 		}
 	}
 
 	public Rectangle getAttackBounds() {
-		// add specialized hitbox for each individual attack
 		if (facingRight) {
 			// Right-facing attack hitboxes
 			if (anims[ATTACKING_G] && attack_G.index == 2)
-				return new Rectangle((int) x + 40, (int) y + 10, 60, 30);
+				return new Rectangle((int) x + 55, (int) y + 30, 32, 22); // punch (G)
 
-			if (anims[ATTACKING_H] && attack_H.index == 2)
-				return new Rectangle((int) x + 40, (int) y + 10, 60, 30);
+			if (anims[ATTACKING_H] && attack_H.index >= 1 && attack_H.index <= 2)
+				return new Rectangle((int) x + 45, (int) y + 25, 35, 20); // quick punch (H)
 
 			if (anims[ATTACKING_B] && attack_B.index >= 4 && attack_B.index <= 6)
-				return new Rectangle((int) x + 60, (int) y, 60, 50);
+				return new Rectangle((int) x + 65, (int) y + 10, 36, 32); // upper kick (B)
 
 			if (anims[ATTACKING_N] && attack_N.index >= 3 && attack_N.index <= 4)
-				return new Rectangle((int) x + 60, (int) y + 50, 60, 50);
+				return new Rectangle((int) x + 60, (int) y + 70, 36, 24); // low kick (N)
 
 			if (anims[ATTACKING_C_G] && attack_C_G.index >= 0 && attack_C_G.index <= 1)
-				return new Rectangle((int) x + 30, (int) y + 40, 60, 30);
+				return new Rectangle((int) x + 35, (int) y + 60, 28, 18); // crouch punch
 
 			if (anims[ATTACKING_A_G] && attack_A_G.index >= 2 && attack_A_G.index <= 3)
-				return new Rectangle((int) x + 30, (int) y + 20, 60, 50);
+				return new Rectangle((int) x + 40, (int) y + 30, 32, 22); // air punch
 
 			if (anims[ATTACKING_A_H] && attack_A_H.index >= 0 && attack_A_H.index <= 1)
-				return new Rectangle((int) x + 30, (int) y + 20, 60, 50);
+				return new Rectangle((int) x + 38, (int) y + 40, 28, 18); // air downward punch
 
 			if (anims[ATTACKING_A_B] && attack_A_B.index >= 2 && attack_A_B.index <= 3)
-				return new Rectangle((int) x + 40, (int) y + 40, 60, 30);
+				return new Rectangle((int) x + 50, (int) y + 50, 32, 18); // air kick
 		} else {
 			// Left-facing attack hitboxes (mirrored)
 			if (anims[ATTACKING_G] && attack_G.index == 2)
-				return new Rectangle((int) x - 100, (int) y + 10, 60, 30);
+				return new Rectangle((int) x - 55 - 32, (int) y + 30, 32, 22); // punch (G)
 
-			if (anims[ATTACKING_H] && attack_H.index == 2)
-				return new Rectangle((int) x - 100, (int) y + 10, 60, 30);
+			if (anims[ATTACKING_H] && attack_H.index >= 1 && attack_H.index <= 2)
+				return new Rectangle((int) x - 45 - 35, (int) y + 25, 35, 20); // quick punch (H)
 
 			if (anims[ATTACKING_B] && attack_B.index >= 4 && attack_B.index <= 6)
-				return new Rectangle((int) x - 120, (int) y, 60, 50);
+				return new Rectangle((int) x - 65 - 36, (int) y + 10, 36, 32); // upper kick (B)
 
 			if (anims[ATTACKING_N] && attack_N.index >= 3 && attack_N.index <= 4)
-				return new Rectangle((int) x - 120, (int) y + 50, 60, 50);
+				return new Rectangle((int) x - 60 - 36, (int) y + 70, 36, 24); // low kick (N)
 
 			if (anims[ATTACKING_C_G] && attack_C_G.index >= 0 && attack_C_G.index <= 1)
-				return new Rectangle((int) x - 90, (int) y + 40, 60, 30);
+				return new Rectangle((int) x - 35 - 28, (int) y + 60, 28, 18); // crouch punch
 
 			if (anims[ATTACKING_A_G] && attack_A_G.index >= 2 && attack_A_G.index <= 3)
-				return new Rectangle((int) x - 90, (int) y + 20, 60, 50);
+				return new Rectangle((int) x - 40 - 32, (int) y + 30, 32, 22); // air punch
 
 			if (anims[ATTACKING_A_H] && attack_A_H.index >= 0 && attack_A_H.index <= 1)
-				return new Rectangle((int) x - 90, (int) y + 20, 60, 50);
+				return new Rectangle((int) x - 38 - 28, (int) y + 40, 28, 18); // air downward punch
 
 			if (anims[ATTACKING_A_B] && attack_A_B.index >= 2 && attack_A_B.index <= 3)
-				return new Rectangle((int) x - 100, (int) y + 40, 60, 30);
+				return new Rectangle((int) x - 50 - 32, (int) y + 50, 32, 18); // air kick
 		}
-
 		return new Rectangle((int) x, (int) y, 0, 0);
 	}
 
