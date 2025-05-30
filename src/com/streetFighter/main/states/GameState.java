@@ -310,32 +310,32 @@ public class GameState extends State {
 			// Player 1 is Ryu
 			double percentRyu = ryu.getHealth() / 100.0;
 			g.fillRect(61, 19, (int) (173 * percentRyu), 11);
-			g.drawImage(ryuFont.getImage(), kenFont.getIconWidth() - 35, 40, 48, 16, null);
+			g.drawImage(ryuFont.getImage(), 35, 40, 48, 16, null);
 		} else if (isBothKen) {
 			// Player 1 is Ken
 			double percentKen = ken.getHealth() / 100.0;
 			g.fillRect(61, 19, (int) (173 * percentKen), 11);
-			g.drawImage(kenFont.getImage(), kenFont.getIconWidth() - 35, 40, 48, 16, null);
+			g.drawImage(kenFont.getImage(), 35, 40, 48, 16, null);
 		} else if (isBothDeeJay) {
 			// Player 1 is DeeJay
 			double percentDeeJay = deeJay.getHealth() / 100.0;
 			g.fillRect(61, 19, (int) (173 * percentDeeJay), 11);
-			g.drawImage(deeJayFont.getImage(), kenFont.getIconWidth() - 35, 40, 48, 16, null);
-		} else if (ryu != null) {
+			g.drawImage(deeJayFont.getImage(), 35, 40, 48, 16, null);
+		} else if (ryu != null && game.getPlayerManager().getPlayer1Selection() == PlayerManager.RYU) {
 			// Player 1 is Ryu
-		double percentRyu = ryu.getHealth() / 100.0;	
-		g.fillRect(61, 19, (int) (173 * percentRyu), 11);
-		g.drawImage(ryuFont.getImage(), kenFont.getIconWidth() - 35, 40, 48, 16, null);
-		} else if (ken != null) {
+			double percentRyu = ryu.getHealth() / 100.0;
+			g.fillRect(61, 19, (int) (173 * percentRyu), 11);
+			g.drawImage(ryuFont.getImage(), 35, 40, 48, 16, null);
+		} else if (ken != null && game.getPlayerManager().getPlayer1Selection() == PlayerManager.KEN) {
 			// Player 1 is Ken
 			double percentKen = ken.getHealth() / 100.0;
 			g.fillRect(61, 19, (int) (173 * percentKen), 11);
-			g.drawImage(kenFont.getImage(), kenFont.getIconWidth() - 35, 40, 48, 16, null);
-		} else if (deeJay != null) {
+			g.drawImage(kenFont.getImage(), 35, 40, 48, 16, null);
+		} else if (deeJay != null && game.getPlayerManager().getPlayer1Selection() == PlayerManager.DEEJAY) {
 			// Player 1 is DeeJay
 			double percentDeeJay = deeJay.getHealth() / 100.0;
 			g.fillRect(61, 19, (int) (173 * percentDeeJay), 11);
-			g.drawImage(deeJayFont.getImage(), kenFont.getIconWidth() - 35, 40, 48, 16, null);
+			g.drawImage(deeJayFont.getImage(), 35, 40, 48, 16, null);
 		}
 		
 		// Render right side health bar (Player 2)
@@ -345,38 +345,37 @@ public class GameState extends State {
 			// Player 2 is also Ryu
 			double percentRyu = player2Ryu.getHealth() / 100.0;
 			g.fillRect(99 + 29 + 144, 19, (int) (173 * percentRyu), 11);
-			g.drawImage(ryuFont.getImage(), (Game.WIDTH * Game.SCALE) - 2 * ryuFont.getIconWidth() + ryuFont.getIconWidth() / 2 + 32, 40, 48, 16, null);
+			g.drawImage(ryuFont.getImage(), (Game.WIDTH * Game.SCALE) - 83, 40, 48, 16, null);
 		} else if (isBothKen) {
 			// Player 2 is also Ken
 			double percentKen = player2Ken.getHealth() / 100.0;
 			g.fillRect(99 + 29 + 144, 19, (int) (173 * percentKen), 11);
-			g.drawImage(kenFont.getImage(), (Game.WIDTH * Game.SCALE) - 2 * kenFont.getIconWidth() + kenFont.getIconWidth() / 2 + 32, 40, 48, 16, null);
+			g.drawImage(kenFont.getImage(), (Game.WIDTH * Game.SCALE) - 83, 40, 48, 16, null);
 		} else if (isBothDeeJay) {
 			// Player 2 is also DeeJay
 			double percentDeeJay = player2DeeJay.getHealth() / 100.0;
 			g.fillRect(99 + 29 + 144, 19, (int) (173 * percentDeeJay), 11);
-			g.drawImage(deeJayFont.getImage(), (Game.WIDTH * Game.SCALE) - 2 * deeJayFont.getIconWidth() + deeJayFont.getIconWidth() / 2 + 32, 40, 48, 16, null);
+			g.drawImage(deeJayFont.getImage(), (Game.WIDTH * Game.SCALE) - 83, 40, 48, 16, null);
 		} else {
 			// Get player selection info
-			int player1Selection = game.getPlayerManager().getPlayer1Selection();
 			int player2Selection = game.getPlayerManager().getPlayer2Selection();
 			
 			// Determine which character is player 2
-			if (player2Selection == PlayerManager.RYU) {
+			if (player2Selection == PlayerManager.RYU && ryu != null) {
 				// Player 2 is Ryu
 				double percentRyu = ryu.getHealth() / 100.0;
 				g.fillRect(99 + 29 + 144, 19, (int) (173 * percentRyu), 11);
-				g.drawImage(ryuFont.getImage(), (Game.WIDTH * Game.SCALE) - 2 * ryuFont.getIconWidth() + ryuFont.getIconWidth() / 2 + 32, 40, 48, 16, null);
-			} else if (player2Selection == PlayerManager.KEN) {
+				g.drawImage(ryuFont.getImage(), (Game.WIDTH * Game.SCALE) - 83, 40, 48, 16, null);
+			} else if (player2Selection == PlayerManager.KEN && ken != null) {
 				// Player 2 is Ken
 				double percentKen = ken.getHealth() / 100.0;
 				g.fillRect(99 + 29 + 144, 19, (int) (173 * percentKen), 11);
-				g.drawImage(kenFont.getImage(), (Game.WIDTH * Game.SCALE) - 2 * kenFont.getIconWidth() + kenFont.getIconWidth() / 2 + 32, 40, 48, 16, null);
-			} else if (player2Selection == PlayerManager.DEEJAY) {
+				g.drawImage(kenFont.getImage(), (Game.WIDTH * Game.SCALE) - 83, 40, 48, 16, null);
+			} else if (player2Selection == PlayerManager.DEEJAY && deeJay != null) {
 				// Player 2 is DeeJay
 				double percentDeeJay = deeJay.getHealth() / 100.0;
 				g.fillRect(99 + 29 + 144, 19, (int) (173 * percentDeeJay), 11);
-				g.drawImage(deeJayFont.getImage(), (Game.WIDTH * Game.SCALE) - 2 * deeJayFont.getIconWidth() + deeJayFont.getIconWidth() / 2 + 32, 40, 48, 16, null);
+				g.drawImage(deeJayFont.getImage(), (Game.WIDTH * Game.SCALE) - 83, 40, 48, 16, null);
 			}
 		}
 		

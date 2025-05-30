@@ -15,7 +15,7 @@ public class Ken extends Creature {
 	private int health;
 	private int velX, velY;
 	private Game game;
-	private boolean facingLeft = true; // By default Ken faces left
+	private boolean facingLeft = false; // By default Ken faces right
 	private int playerNumber = 1; // Default to player 1, can be 1 or 2
 
 	// STATES
@@ -92,8 +92,8 @@ public class Ken extends Creature {
 		this.playerNumber = playerNumber;
 		
 		// Determine facing direction based on position
-		// If Ken is on the left side, he should face right
-		this.facingLeft = (x > Game.WIDTH);
+		// If Ken is on the right side, he should face left
+		this.facingLeft = (x > Game.WIDTH / 2);
 
 		rand = new Random();
 
@@ -434,7 +434,6 @@ public class Ken extends Creature {
 
 	@Override
 	public void render(Graphics g) {
-
 		// 2d graphics for transformations
 		Graphics2D g2d = (Graphics2D) g;	
 
@@ -446,20 +445,20 @@ public class Ken extends Creature {
 
 		// draw shadow - adjust position based on facing direction
 		g.setColor(new Color(0,0,0, 125));
-		if (!facingLeft) {
+		if (facingLeft) {
 			g.fillOval((int) x - 60, 188 * Game.SCALE, 64, 16);
 		} else {
 			g.fillOval((int) x - 4, 188 * Game.SCALE, 64, 16);
 		}
 
 		// If Ken is facing left, flip the sprite horizontally
-		if (!facingLeft) {
+		if (facingLeft) {
 			drawKenFacingLeft(g);
 		} else {
 			drawKenFacingRight(g);
 		}
 	}
-	
+
 	private void drawKenFacingLeft(Graphics g) {
 		// Original rendering code for Ken facing left
 		if(anims[PARRYING_R])

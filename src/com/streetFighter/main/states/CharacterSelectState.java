@@ -99,7 +99,6 @@ public class CharacterSelectState extends State {
                 playerManager.confirmSelection(currentSelection);
                 // Both players have selected, move to map selection
                 if (playerManager.isSelectionComplete()) {
-                    game.setSelectedCharacter(playerManager.getGameCharacterSelection());
                     State.setState(new MapSelectState(game));
                 }
             }
