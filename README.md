@@ -1,6 +1,6 @@
 
 # Purpose of existence
-This is an attempt to clone the famous Plants vs. Zombies© game originally made by PopCap Games. 
+This is an attempt to clone the famous Street Fighter II© game originally made by Capcom Games. 
 It serves as the final project for our OOP course in HCMIU-VN.
 
 Here is our [Report](https://docs.google.com/document/d/1-x6TO5RWkOiXCckvUn_YDDKC1qChkGwLeLGqAAbC7Rg/edit?tab=t.0)
